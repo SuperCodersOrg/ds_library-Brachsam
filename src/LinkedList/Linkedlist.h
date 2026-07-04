@@ -1,6 +1,8 @@
 #pragma once
 #include <iostream>
 #include <cstdlib>
+#include <string>
+#include "../Exceptions/exception.h"
 using namespace std;
 
 // base class — just the contract, no implementation
@@ -8,7 +10,7 @@ using namespace std;
 template<typename T>
 class LinkedList {
 public:
-    // pure virtual functions, these forces every derived class to implement these functions. 
+    // pure virtual functions, these force every derived class to implement them
     virtual void insertFront(const T& val)       = 0;
     virtual void insertBack(const T& val)        = 0;
     virtual void deleteFront()                   = 0;
@@ -38,16 +40,11 @@ public:
 private:
     Node* head;
     Node* tail;
-    int   n;
-
-    void error(const char* msg) const {
-        cout << "SinglyList: " << msg << "\n";
-        exit(1);
-    }
+    int   count;
 
     Node* makeNode(const T& val) {
         Node* node = (Node*) malloc(sizeof(Node));
-        if (!node) error("out of memory");
+        if (!node) throw OutOfMemoryException("could not allocate a node");
         new (&node->data) T(val);
         node->next = nullptr;
         return node;
@@ -61,176 +58,174 @@ private:
     // walks to the node just before index
     // used by insert and remove to avoid repeating the same loop
     Node* nodeBefore(int index) const {
-        Node* curr = head;
+        Node* cur = head;
         for (int i = 0; i < index - 1; i++)
-            curr = curr->next;
-        return curr;
+            cur = cur->next;
+        return cur;
     }
 
 public:
 
-    SinglyLinkedList() : head(nullptr), tail(nullptr), n(0) {}
+    SinglyLinkedList() : head(nullptr), tail(nullptr), count(0) {}
 
     ~SinglyLinkedList() {
-        Node* curr = head;
-        while (curr != nullptr) {
-            Node* next = curr->next;   // save next before freeing
-            freeNode(curr);
-            curr = next;
+        Node* cur = head;
+        while (cur != nullptr) {
+            Node* next = cur->next;   // save next before freeing
+            freeNode(cur);
+            cur = next;
         }
     }
 
-    SinglyLinkedList(const SinglyLinkedList& other) : head(nullptr), tail(nullptr), n(0) {
-        Node* curr = other.head;
-        while (curr != nullptr) {
-            insertBack(curr->data);
-            curr = curr->next;
+    SinglyLinkedList(const SinglyLinkedList& other) : head(nullptr), tail(nullptr), count(0) {
+        Node* cur = other.head;
+        while (cur != nullptr) {
+            insertBack(cur->data);
+            cur = cur->next;
         }
     }
 
     SinglyLinkedList& operator=(const SinglyLinkedList& other) {
         if (this == &other) return *this;
-        Node* curr = head;
-        while (curr != nullptr) {
-            Node* next = curr->next;
-            freeNode(curr);
-            curr = next;
+        Node* cur = head;
+        while (cur != nullptr) {
+            Node* next = cur->next;
+            freeNode(cur);
+            cur = next;
         }
-        head = nullptr; tail = nullptr; n = 0;
-        curr = other.head;
-        while (curr != nullptr) {
-            insertBack(curr->data);
-            curr = curr->next;
+        head = nullptr; tail = nullptr; count = 0;
+        cur = other.head;
+        while (cur != nullptr) {
+            insertBack(cur->data);
+            cur = cur->next;
         }
         return *this;
     }
 
-    int   size()    const override { return n;    }
-    Node* getHead() const          { return head; }
+    int   size()    const override { return count; }
+    Node* getHead() const           { return head;  }
 
     void insertFront(const T& val) override {
         Node* node = makeNode(val);
         node->next = head;
         head       = node;
-        if (n == 0) tail = node;
-        n++;
+        if (count == 0) tail = node;
+        count++;
     }
 
     // O(1) only because we keep a tail pointer
     void insertBack(const T& val) override {
         Node* node = makeNode(val);
-        if (n == 0) { head = node; tail = node; }
-        else        { tail->next = node; tail = node; }
-        n++;
+        if (count == 0) { head = node; tail = node; }
+        else            { tail->next = node; tail = node; }
+        count++;
     }
 
     // save the link before rewiring — do it the other way and the rest is lost
     void insert(int index, const T& val) override {
-        if (index < 0 || index > n) error("insert: index out of range");
-        if (index == 0) { insertFront(val); return; }
-        if (index == n) { insertBack(val);  return; }
+        if (index < 0 || index > count) throw LinkedListException("insert: index " + to_string(index) + " out of range, size is " + to_string(count));
+        if (index == 0)     { insertFront(val); return; }
+        if (index == count) { insertBack(val);  return; }
         Node* prev = nodeBefore(index);
         Node* node = makeNode(val);
         node->next = prev->next;
         prev->next = node;
-        n++;
+        count++;
     }
 
     void deleteFront() override {
-        if (n == 0) error("deleteFront: list is empty");
+        if (count == 0) throw EmptyListException("deleteFront: list is empty");
         Node* toFree = head;
         head         = head->next;
         freeNode(toFree);
-        toFree = nullptr;
-        if (n == 1) tail = nullptr;
-        n--;
+        if (count == 1) tail = nullptr;
+        count--;
     }
 
     // no prev pointer so we walk from head — this is the O(N) cost of singly
     void deleteBack() override {
-        if (n == 0) error("deleteBack: list is empty");
-        if (n == 1) {
+        if (count == 0) throw EmptyListException("deleteBack: list is empty");
+        if (count == 1) {
             freeNode(head);
             head = nullptr; tail = nullptr;
-            n--; return;
+            count--; return;
         }
-        Node* curr = head;
-        while (curr->next != tail)
-            curr = curr->next;
+        Node* cur = head;
+        while (cur->next != tail)
+            cur = cur->next;
         freeNode(tail);
-        tail       = curr;
+        tail       = cur;
         tail->next = nullptr;
-        n--;
+        count--;
     }
 
     void remove(int index) override {
-        if (index < 0 || index >= n) error("remove: index out of range");
-        if (index == 0)     { deleteFront(); return; }
-        if (index == n - 1) { deleteBack();  return; }
+        if (index < 0 || index >= count) throw LinkedListException("remove: index " + to_string(index) + " out of range, size is " + to_string(count));
+        if (index == 0)         { deleteFront(); return; }
+        if (index == count - 1) { deleteBack();  return; }
         Node* prev   = nodeBefore(index);
         Node* toFree = prev->next;
         prev->next   = toFree->next;
         freeNode(toFree);
-        toFree = nullptr;
-        n--;
+        count--;
     }
 
     bool search(const T& val) const override {
-        Node* curr = head;
-        while (curr != nullptr) {
-            if (curr->data == val) return true;
-            curr = curr->next;
+        Node* cur = head;
+        while (cur != nullptr) {
+            if (cur->data == val) return true;
+            cur = cur->next;
         }
         return false;
     }
 
     // no random access — must walk from head every time
     T get(int index) const override {
-        if (index < 0 || index >= n) error("get: index out of range");
-        Node* curr = head;
+        if (index < 0 || index >= count) throw LinkedListException("get: index " + to_string(index) + " out of range, size is " + to_string(count));
+        Node* cur = head;
         for (int i = 0; i < index; i++)
-            curr = curr->next;
-        return curr->data;
+            cur = cur->next;
+        return cur->data;
     }
 
     // used by HashMap to remove a specific key from a chain
     bool removeVal(const T& val) {
-        Node* curr = head;
+        Node* cur = head;
         Node* prev = nullptr;
-        while (curr != nullptr) {
-            if (curr->data == val) {
-                if (prev) prev->next = curr->next;
-                else      head       = curr->next;
-                if (curr == tail) tail = prev;
-                freeNode(curr);
-                n--;
+        while (cur != nullptr) {
+            if (cur->data == val) {
+                if (prev) prev->next = cur->next;
+                else      head       = cur->next;
+                if (cur == tail) tail = prev;
+                freeNode(cur);
+                count--;
                 return true;
             }
-            prev = curr;
-            curr = curr->next;
+            prev = cur;
+            cur = cur->next;
         }
         return false;
     }
 
     void clear() {
-        Node* curr = head;
-        while (curr != nullptr) {
-            Node* next = curr->next;
-            freeNode(curr);
-            curr = next;
+        Node* cur = head;
+        while (cur != nullptr) {
+            Node* next = cur->next;
+            freeNode(cur);
+            cur = next;
         }
-        head = nullptr; tail = nullptr; n = 0;
+        head = nullptr; tail = nullptr; count = 0;
     }
 
     void print() const override {
-        Node* curr = head;
+        Node* cur = head;
         cout << "[ ";
-        while (curr != nullptr) {
-            cout << curr->data;
-            if (curr->next != nullptr) cout << " -> ";
-            curr = curr->next;
+        while (cur != nullptr) {
+            cout << cur->data;
+            if (cur->next != nullptr) cout << " -> ";
+            cur = cur->next;
         }
-        cout << " ]  size=" << n << "  singly\n";
+        cout << " ]  size=" << count << "  singly\n";
     }
 };
 
@@ -249,16 +244,11 @@ public:
 private:
     Node* head;
     Node* tail;
-    int   n;
-
-    void error(const char* msg) const {
-        cout << "DoublyList: " << msg << "\n";
-        exit(1);
-    }
+    int   count;
 
     Node* makeNode(const T& val) {
         Node* node = (Node*) malloc(sizeof(Node));
-        if (!node) error("out of memory");
+        if (!node) throw OutOfMemoryException("could not allocate a node");
         new (&node->data) T(val);
         node->next = nullptr;
         node->prev = nullptr;
@@ -271,77 +261,77 @@ private:
     }
 
     Node* nodeBefore(int index) const {
-        Node* curr = head;
+        Node* cur = head;
         for (int i = 0; i < index - 1; i++)
-            curr = curr->next;
-        return curr;
+            cur = cur->next;
+        return cur;
     }
 
 public:
 
-    DoublyLinkedList() : head(nullptr), tail(nullptr), n(0) {}
+    DoublyLinkedList() : head(nullptr), tail(nullptr), count(0) {}
 
     ~DoublyLinkedList() {
-        Node* curr = head;
-        while (curr != nullptr) {
-            Node* next = curr->next;
-            freeNode(curr);
-            curr = next;
+        Node* cur = head;
+        while (cur != nullptr) {
+            Node* next = cur->next;
+            freeNode(cur);
+            cur = next;
         }
     }
 
-    DoublyLinkedList(const DoublyLinkedList& other) : head(nullptr), tail(nullptr), n(0) {
-        Node* curr = other.head;
-        while (curr != nullptr) {
-            insertBack(curr->data);
-            curr = curr->next;
+    DoublyLinkedList(const DoublyLinkedList& other) : head(nullptr), tail(nullptr), count(0) {
+        Node* cur = other.head;
+        while (cur != nullptr) {
+            insertBack(cur->data);
+            cur = cur->next;
         }
     }
 
     DoublyLinkedList& operator=(const DoublyLinkedList& other) {
         if (this == &other) return *this;
-        Node* curr = head;
-        while (curr != nullptr) {
-            Node* next = curr->next;
-            freeNode(curr);
-            curr = next;
+        Node* cur = head;
+        while (cur != nullptr) {
+            Node* next = cur->next;
+            freeNode(cur);
+            cur = next;
         }
-        head = nullptr; tail = nullptr; n = 0;
-        curr = other.head;
-        while (curr != nullptr) {
-            insertBack(curr->data);
-            curr = curr->next;
+        head = nullptr; tail = nullptr; count = 0;
+        cur = other.head;
+        while (cur != nullptr) {
+            insertBack(cur->data);
+            cur = cur->next;
         }
         return *this;
     }
 
-    int   size()    const override { return n;    }
-    Node* getHead() const          { return head; }
+    int   size()    const override { return count; }
+    Node* getHead() const           { return head;  }
 
     void insertFront(const T& val) override {
         Node* node = makeNode(val);
         node->next = head;
         if (head != nullptr) head->prev = node;
         head = node;
-        if (n == 0) tail = node;
-        n++;
+        if (count == 0) tail = node;
+        count++;
     }
 
     void insertBack(const T& val) override {
         Node* node = makeNode(val);
-        if (n == 0) { head = node; tail = node; }
+        if (count == 0) { head = node; tail = node; }
         else {
             tail->next = node;
             node->prev = tail;
             tail = node;
         }
-        n++;
+        count++;
     }
 
     void insert(int index, const T& val) override {
-        if (index < 0 || index > n) error("insert: index out of range");
-        if (index == 0) { insertFront(val); return; }
-        if (index == n) { insertBack(val);  return; }
+        if (index < 0 || index > count) throw LinkedListException("insert: index " + to_string(index) + " out of range, size is " + to_string(count));
+        if (index == 0)     { insertFront(val); return; }
+        if (index == count) { insertBack(val);  return; }
         Node* prev = nodeBefore(index);
         Node* next = prev->next;
         Node* node = makeNode(val);
@@ -349,103 +339,100 @@ public:
         node->prev = prev;
         prev->next = node;
         if (next != nullptr) next->prev = node;
-        n++;
+        count++;
     }
 
     void deleteFront() override {
-        if (n == 0) error("deleteFront: list is empty");
+        if (count == 0) throw EmptyListException("deleteFront: list is empty");
         Node* toFree = head;
         head         = head->next;
         if (head != nullptr) head->prev = nullptr;
         freeNode(toFree);
-        toFree = nullptr;
-        if (n == 1) tail = nullptr;
-        n--;
+        if (count == 1) tail = nullptr;
+        count--;
     }
 
     // O(1) — just jump to tail->prev, no walking needed
     // this is exactly why doubly linked exists
     void deleteBack() override {
-        if (n == 0) error("deleteBack: list is empty");
-        if (n == 1) {
+        if (count == 0) throw EmptyListException("deleteBack: list is empty");
+        if (count == 1) {
             freeNode(head);
             head = nullptr; tail = nullptr;
-            n--; return;
+            count--; return;
         }
         Node* toFree = tail;
         tail         = tail->prev;
         tail->next   = nullptr;
         freeNode(toFree);
-        toFree = nullptr;
-        n--;
+        count--;
     }
 
     void remove(int index) override {
-        if (index < 0 || index >= n) error("remove: index out of range");
-        if (index == 0)     { deleteFront(); return; }
-        if (index == n - 1) { deleteBack();  return; }
+        if (index < 0 || index >= count) throw LinkedListException("remove: index " + to_string(index) + " out of range, size is " + to_string(count));
+        if (index == 0)         { deleteFront(); return; }
+        if (index == count - 1) { deleteBack();  return; }
         Node* prev   = nodeBefore(index);
         Node* toFree = prev->next;
         Node* next   = toFree->next;
         prev->next = next;
         if (next != nullptr) next->prev = prev;
         freeNode(toFree);
-        toFree = nullptr;
-        n--;
+        count--;
     }
 
     bool search(const T& val) const override {
-        Node* curr = head;
-        while (curr != nullptr) {
-            if (curr->data == val) return true;
-            curr = curr->next;
+        Node* cur = head;
+        while (cur != nullptr) {
+            if (cur->data == val) return true;
+            cur = cur->next;
         }
         return false;
     }
 
     T get(int index) const override {
-        if (index < 0 || index >= n) error("get: index out of range");
-        Node* curr = head;
+        if (index < 0 || index >= count) throw LinkedListException("get: index " + to_string(index) + " out of range, size is " + to_string(count));
+        Node* cur = head;
         for (int i = 0; i < index; i++)
-            curr = curr->next;
-        return curr->data;
+            cur = cur->next;
+        return cur->data;
     }
 
     bool removeVal(const T& val) {
-        Node* curr = head;
-        while (curr != nullptr) {
-            if (curr->data == val) {
-                if (curr->prev) curr->prev->next = curr->next;
-                else            head             = curr->next;
-                if (curr->next) curr->next->prev = curr->prev;
-                else            tail             = curr->prev;
-                freeNode(curr);
-                n--;
+        Node* cur = head;
+        while (cur != nullptr) {
+            if (cur->data == val) {
+                if (cur->prev) cur->prev->next = cur->next;
+                else           head            = cur->next;
+                if (cur->next) cur->next->prev = cur->prev;
+                else           tail            = cur->prev;
+                freeNode(cur);
+                count--;
                 return true;
             }
-            curr = curr->next;
+            cur = cur->next;
         }
         return false;
     }
 
     void clear() {
-        Node* curr = head;
-        while (curr != nullptr) {
-            Node* next = curr->next;
-            freeNode(curr);
-            curr = next;
+        Node* cur = head;
+        while (cur != nullptr) {
+            Node* next = cur->next;
+            freeNode(cur);
+            cur = next;
         }
-        head = nullptr; tail = nullptr; n = 0;
+        head = nullptr; tail = nullptr; count = 0;
     }
 
     void print() const override {
-        Node* curr = head;
+        Node* cur = head;
         cout << "[ ";
-        while (curr != nullptr) {
-            cout << curr->data;
-            if (curr->next != nullptr) cout << " -> ";
-            curr = curr->next;
+        while (cur != nullptr) {
+            cout << cur->data;
+            if (cur->next != nullptr) cout << " -> ";
+            cur = cur->next;
         }
-        cout << " ]  size=" << n << "  doubly\n";
+        cout << " ]  size=" << count << "  doubly\n";
     }
 };

@@ -4,6 +4,7 @@
 #include <cstring>
 #include "../DynamicArray/Dynamicarray.h"
 #include "../LinkedList/Linkedlist.h"
+#include "../Exceptions/exception.h"
 using namespace std;
 
 // Hash — compiler picks the right specialization based on K
@@ -16,9 +17,9 @@ struct Hash {
 template<>
 struct Hash<int> {
     int operator()(const int& key, int buckets) const {
-        unsigned u = (unsigned) key;
-        u = u * 2654435761u;
-        return (int)(u % (unsigned) buckets);
+        unsigned bits = (unsigned) key;
+        bits = bits * 2654435761u;
+        return (int)(bits % (unsigned) buckets);
     }
 };
 
@@ -44,7 +45,7 @@ struct Hash<double> {
         unsigned long long bits;
         memcpy(&bits, &key, sizeof(double));
         bits ^= bits >> 33;
-        bits *= 0xff51afd7ed558ccdULL; //produces good miing of bits, chosen by the designers of the MurmurHash3 algorithm
+        bits *= 0xff51afd7ed558ccdULL; //produces good mixing of bits, chosen by the designers of the MurmurHash3 algorithm
         bits ^= bits >> 33;
         return (int)(bits % (unsigned long long) buckets);
     }
@@ -53,7 +54,7 @@ struct Hash<double> {
 template<>
 struct Hash<string> {
     int operator()(const string& key, int buckets) const {
-        unsigned long h = 5381; //DJB2 algorithm
+        unsigned long h = 5381; //DJB2 algorithm (multiplies by 33 and adds the ASCII value)
         for (char c : key)
             h = ((h << 5) + h) + (unsigned char) c;
         return (int)(h % (unsigned long) buckets);
@@ -77,7 +78,7 @@ struct Pair {
     V val;
     Pair() {}
     Pair(const K& k, const V& v) : key(k), val(v) {}
-    bool operator==(const Pair& o) const { return key == o.key; }
+    bool operator==(const Pair& other) const { return key == other.key; }
 };
 
 
@@ -95,143 +96,141 @@ public:
 
 private:
     DynamicArray< SinglyLinkedList< Pair<K,V> > > buckets;
-    int n;
+    int count;
     Hash<K> hasher;
 
-    static const int P = 3;
-
-    void error(const char* msg) const { cout << "HashMap: " << msg << "\n"; exit(1); }
+    static const int PROBE_LIMIT = 3;
 
     int homeIndex(const K& key) const {
         return hasher(key, bucketCount);
     }
 
     void rehash(int newCount) {
-        DynamicArray< SinglyLinkedList< Pair<K,V> > > nb;
+        DynamicArray< SinglyLinkedList< Pair<K,V> > > newBuckets;
         for (int i = 0; i < newCount; i++)
-            nb.append(SinglyLinkedList< Pair<K,V> >());
+            newBuckets.append(SinglyLinkedList< Pair<K,V> >());
 
         for (int i = 0; i < bucketCount; i++) {
-            typename SinglyLinkedList< Pair<K,V> >::Node* c = buckets.get(i).getHead();
-            while (c) {
-                int h = hasher(c->data.key, newCount);
+            typename SinglyLinkedList< Pair<K,V> >::Node* cur = buckets.get(i).getHead();
+            while (cur) {
+                int home = hasher(cur->data.key, newCount);
                 bool placed = false;
-                for (int p = 0; p < P; p++) {
-                    int pr = (h + p) % newCount;
-                    if (nb.get(pr).size() == 0) {
-                        nb.get(pr).insertBack(c->data);
+                for (int p = 0; p < PROBE_LIMIT; p++) {
+                    int idx = (home + p) % newCount;
+                    if (newBuckets.get(idx).size() == 0) {
+                        newBuckets.get(idx).insertBack(cur->data);
                         placed = true;
                         break;
                     }
                 }
-                if (!placed) nb.get(h).insertBack(c->data);
-                c = c->next;
+                if (!placed) newBuckets.get(home).insertBack(cur->data);
+                cur = cur->next;
             }
         }
-        buckets = nb;
+        buckets = newBuckets;
         bucketCount = newCount;
     }
 
 public:
 
-    HashMap() : bucketCount(8), n(0) {
+    HashMap() : bucketCount(8), count(0) {
         for (int i = 0; i < bucketCount; i++)
             buckets.append(SinglyLinkedList< Pair<K,V> >());
     }
 
     ~HashMap() {}
 
-    int   size()       const { return n; }
-    float loadFactor() const { return (float) n / (float) bucketCount; }
+    int   size() const { return count; }
+    float loadFactor() const { return (float) count / (float) bucketCount; }
 
     void set(const K& key, const V& val) {
-        if (loadFactor() >= 0.7f)
+        if ((count + 1.0f) / bucketCount >= 0.7f)
             rehash(bucketCount * 2);
 
-        int h = homeIndex(key);
+        int home = homeIndex(key);
 
-        // update if key already exists
-        for (int p = 0; p < P; p++) {
-            int pr = (h + p) % bucketCount;
-            typename SinglyLinkedList< Pair<K,V> >::Node* c = buckets.get(pr).getHead();
-            while (c) {
-                if (c->data.key == key) { c->data.val = val; return; }
-                c = c->next;
+        // update if key already exists, search all probe slots for the key
+        // bounded linear probing
+        for (int p = 0; p < PROBE_LIMIT; p++) {
+            int idx = (home + p) % bucketCount;
+            typename SinglyLinkedList< Pair<K,V> >::Node* cur = buckets.get(idx).getHead();
+            while (cur) {
+                if (cur->data.key == key) { cur->data.val = val; return; }
+                cur = cur->next;
             }
         }
 
         // insert into first empty probe slot
-        for (int p = 0; p < P; p++) {
-            int pr = (h + p) % bucketCount;
-            if (buckets.get(pr).size() == 0) {
-                buckets.get(pr).insertBack(Pair<K,V>(key, val));
-                n++;
+        for (int p = 0; p < PROBE_LIMIT; p++) {
+            int idx = (home + p) % bucketCount;
+            if (buckets.get(idx).size() == 0) {
+                buckets.get(idx).insertBack(Pair<K,V>(key, val));
+                count++;
                 return;
             }
         }
 
         // all probe slots full — chain at home bucket
-        buckets.get(h).insertBack(Pair<K,V>(key, val));
-        n++;
+        buckets.get(home).insertBack(Pair<K,V>(key, val));
+        count++;
     }
 
     V& get(const K& key) const {
-        int h = homeIndex(key);
-        for (int p = 0; p < P; p++) {
-            int pr = (h + p) % bucketCount;
-            typename SinglyLinkedList< Pair<K,V> >::Node* c = buckets.get(pr).getHead();
-            while (c) {
-                if (c->data.key == key) return c->data.val;
-                c = c->next;
+        int home = homeIndex(key);
+        for (int p = 0; p < PROBE_LIMIT; p++) {
+            int idx = (home + p) % bucketCount;
+            typename SinglyLinkedList< Pair<K,V> >::Node* cur = buckets.get(idx).getHead();
+            while (cur) {
+                if (cur->data.key == key) return cur->data.val;
+                cur = cur->next;
             }
         }
-        error("get: key not found");
-        return buckets.get(0).getHead()->data.val;
+        throw KeyNotFoundException("get: key not found");
     }
 
     bool exists(const K& key) const {
-        int h = homeIndex(key);
-        for (int p = 0; p < P; p++) {
-            int pr = (h + p) % bucketCount;
-            typename SinglyLinkedList< Pair<K,V> >::Node* c = buckets.get(pr).getHead();
-            while (c) {
-                if (c->data.key == key) return true;
-                c = c->next;
+        int home = homeIndex(key);
+        for (int p = 0; p < PROBE_LIMIT; p++) {
+            int idx = (home + p) % bucketCount;
+            typename SinglyLinkedList< Pair<K,V> >::Node* cur = buckets.get(idx).getHead();
+            while (cur) {
+                if (cur->data.key == key) return true;
+                cur = cur->next;
             }
         }
         return false;
     }
 
     void remove(const K& key) {
-        int h = homeIndex(key);
-        for (int p = 0; p < P; p++) {
-            int pr = (h + p) % bucketCount;
-            typename SinglyLinkedList< Pair<K,V> >::Node* c = buckets.get(pr).getHead();
-            while (c) {
-                if (c->data.key == key) {
-                    buckets.get(pr).removeVal(c->data);
-                    n--;
+        int home = homeIndex(key);
+        for (int p = 0; p < PROBE_LIMIT; p++) {
+            int idx = (home + p) % bucketCount;
+            typename SinglyLinkedList< Pair<K,V> >::Node* cur = buckets.get(idx).getHead();
+            while (cur) {
+                if (cur->data.key == key) {
+                    buckets.get(idx).removeVal(cur->data);
+                    count--;
                     return;
                 }
-                c = c->next;
+                cur = cur->next;
             }
         }
-        error("remove: key not found");
+        throw KeyNotFoundException("remove: key not found");
     }
 
     void clear() {
-    buckets = DynamicArray< SinglyLinkedList< Pair<K,V> > >();
-    bucketCount = 8;
-    for (int i = 0; i < bucketCount; i++)
-        buckets.append(SinglyLinkedList< Pair<K,V> >());
-    n = 0;
-}
+        buckets = DynamicArray< SinglyLinkedList< Pair<K,V> > >();
+        bucketCount = 8;
+        for (int i = 0; i < bucketCount; i++)
+            buckets.append(SinglyLinkedList< Pair<K,V> >());
+        count = 0;
+    }
 
     DynamicArray<K> keys() const {
         DynamicArray<K> result;
         for (int i = 0; i < bucketCount; i++) {
-            typename SinglyLinkedList< Pair<K,V> >::Node* c = buckets.get(i).getHead();
-            while (c) { result.append(c->data.key); c = c->next; }
+            typename SinglyLinkedList< Pair<K,V> >::Node* cur = buckets.get(i).getHead();
+            while (cur) { result.append(cur->data.key); cur = cur->next; }
         }
         return result;
     }
@@ -239,8 +238,8 @@ public:
     DynamicArray<V> values() const {
         DynamicArray<V> result;
         for (int i = 0; i < bucketCount; i++) {
-            typename SinglyLinkedList< Pair<K,V> >::Node* c = buckets.get(i).getHead();
-            while (c) { result.append(c->data.val); c = c->next; }
+            typename SinglyLinkedList< Pair<K,V> >::Node* cur = buckets.get(i).getHead();
+            while (cur) { result.append(cur->data.val); cur = cur->next; }
         }
         return result;
     }
@@ -248,23 +247,23 @@ public:
     void merge(const HashMap<K,V>& other) {
         DynamicArray<K> otherKeys = other.keys();
         for (int i = 0; i < otherKeys.size(); i++) {
-            const K& k = otherKeys.get(i);
-            if (!exists(k))
-                set(k, other.get(k));
+            const K& key = otherKeys.get(i);
+            if (!exists(key))
+                set(key, other.get(key));
         }
     }
 
     void print() const {
-        cout << "HashMap  size=" << n << "  buckets=" << bucketCount
+        cout << "HashMap  size=" << count << "  buckets=" << bucketCount
              << "  load=" << loadFactor() << "\n";
         for (int i = 0; i < bucketCount; i++) {
             if (buckets.get(i).size() == 0) continue;
             cout << "  [" << i << "] ";
-            typename SinglyLinkedList< Pair<K,V> >::Node* c = buckets.get(i).getHead();
-            while (c) {
-                cout << "{" << c->data.key << " : " << c->data.val << "}";
-                if (c->next) cout << " -> ";
-                c = c->next;
+            typename SinglyLinkedList< Pair<K,V> >::Node* cur = buckets.get(i).getHead();
+            while (cur) {
+                cout << "{" << cur->data.key << " : " << cur->data.val << "}";
+                if (cur->next) cout << " -> ";
+                cur = cur->next;
             }
             cout << "\n";
         }
@@ -276,7 +275,7 @@ public:
 // ─────────────────────────────────────────────────────────────────────────────
 struct Point {
     int x, y;
-    bool operator==(const Point& o) const { return x == o.x && y == o.y; }
+    bool operator==(const Point& other) const { return x == other.x && y == other.y; }
     friend ostream& operator<<(ostream& os, const Point& p) {
         return os << "(" << p.x << "," << p.y << ")";
     }
