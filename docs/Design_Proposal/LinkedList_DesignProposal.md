@@ -27,8 +27,8 @@ The Linked List is a simple class that supports both singly-linked and Doubly-Li
 
 
 ## Section 2
-### Dynamic Array and Linked List
-![](image.png)
+### Linked List
+![alt text](image-2.png)
 
 ## Section 3
 ### Linked List Complexity Estimates 

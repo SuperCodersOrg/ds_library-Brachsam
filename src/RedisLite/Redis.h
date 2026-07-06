@@ -2,7 +2,9 @@
 #include <iostream>
 #include <string>
 #include <sstream>
+#include <stdexcept>
 #include "../HashMap/hmap.h"
+#include "../Exceptions/exception.h"
 
 using namespace std;
 
@@ -14,10 +16,10 @@ private:
     HashMap<string, string> storage;
 
     void printCommands();
-    void handleSet(stringstream& ss);
-    void handleGet(stringstream& ss);
-    void handleDel(stringstream& ss);
-    void handleExists(stringstream& ss);
+    void handleSet(stringstream& in);
+    void handleGet(stringstream& in);
+    void handleDel(stringstream& in);
+    void handleExists(stringstream& in);
     void handleCount();
     void handlePrint();
     void handleStats();
@@ -26,6 +28,9 @@ private:
 
 // ---------------------------------------------------------
 // run() — read, parse, dispatch. No HashMap calls live here.
+// the try/catch below is the only place in the whole app that
+// actually catches exceptions — everything under it just throws
+// and lets it bubble up. one bad command shouldn't kill the CLI.
 // ---------------------------------------------------------
 void RedisLite::run() {
     string line;
@@ -37,21 +42,46 @@ void RedisLite::run() {
         if (!getline(cin, line)) break;   // EOF (e.g. Ctrl+D)
         if (line.empty()) continue;
 
-        stringstream ss(line);
+        stringstream in(line);
         string command;
-        ss >> command;
+        in >> command;
 
-        if (command == "SET")          handleSet(ss);
-        else if (command == "GET")     handleGet(ss);
-        else if (command == "DEL")     handleDel(ss);
-        else if (command == "EXISTS")  handleExists(ss);
-        else if (command == "COUNT")   handleCount();
-        else if (command == "PRINT")   handlePrint();
-        else if (command == "STATS")   handleStats();
-        else if (command == "CLEAR")   handleClear();
-        else if (command == "HELP")    printCommands();
-        else if (command == "EXIT")    break;
-        else cout << "Unknown command. Type HELP for the command list." << endl;
+        try {
+            if (command == "SET")          handleSet(in);
+            else if (command == "GET")     handleGet(in);
+            else if (command == "DEL")     handleDel(in);
+            else if (command == "EXISTS")  handleExists(in);
+            else if (command == "COUNT")   handleCount();
+            else if (command == "PRINT")   handlePrint();
+            else if (command == "STATS")   handleStats();
+            else if (command == "CLEAR")   handleClear();
+            else if (command == "HELP")    printCommands();
+            else if (command == "EXIT")    break;
+            else cout << "Unknown command. Type HELP for the command list." << endl;
+        }
+        catch (const KeyNotFoundException& e) {
+            cout << "Error: " << e.what() << endl;
+        }
+        catch (const DynamicArrayException& e) {
+            cout << "Error: " << e.what() << endl;
+        }
+        catch (const LinkedListException& e) {
+            cout << "Error: " << e.what() << endl;
+        }
+        catch (const EmptyListException& e) {
+            cout << "Error: " << e.what() << endl;
+        }
+        catch (const OutOfMemoryException& e) {
+            cout << "Error: " << e.what() << endl;
+        }
+        catch (const invalid_argument& e) {
+            // bad usage, e.g. SET with no key/value
+            cout << "Error: " << e.what() << endl;
+        }
+        catch (const exception& e) {
+            // catch-all so nothing we forgot about takes the CLI down
+            cout << "Unexpected error: " << e.what() << endl;
+        }
     }
 }
 
@@ -72,17 +102,15 @@ void RedisLite::printCommands() {
 // ---------------------------------------------------------
 // SET <key> <value>
 // ---------------------------------------------------------
-void RedisLite::handleSet(stringstream& ss) {
+void RedisLite::handleSet(stringstream& in) {
     string key, value;
-    ss >> key;
-    getline(ss, value);                       // grabs the rest of the line
+    in >> key;
+    getline(in, value);                        // grabs the rest of the line
     if (!value.empty() && value[0] == ' ')     // strip the leading space
         value.erase(0, 1);
 
-    if (key.empty() || value.empty()) {
-        cout << "Usage: SET <key> <value>" << endl;
-        return;
-    }
+    if (key.empty() || value.empty())
+        throw invalid_argument("Usage: SET <key> <value>");
 
     storage.set(key, value);   // overwrite-on-duplicate handled inside set()
     cout << "OK" << endl;
@@ -90,43 +118,47 @@ void RedisLite::handleSet(stringstream& ss) {
 
 // ---------------------------------------------------------
 // GET <key>
-// exists() check first — get() exit(1)s on a missing key,
-// so we must never call it blind.
+// exists() check first so we don't even need the exception in
+// the normal case — get() only throws on a key that's actually
+// missing, which shouldn't happen after the check, but wrapping
+// it anyway means we never print a raw exception to the user.
 // ---------------------------------------------------------
-void RedisLite::handleGet(stringstream& ss) {
+void RedisLite::handleGet(stringstream& in) {
     string key;
-    ss >> key;
+    in >> key;
 
-    if (key.empty()) {
-        cout << "Usage: GET <key>" << endl;
-        return;
-    }
+    if (key.empty())
+        throw invalid_argument("Usage: GET <key>");
 
-    if (storage.exists(key)) {
-        cout << storage.get(key) << endl;
-    } else {
+    try {
+        if (storage.exists(key))
+            cout << storage.get(key) << endl;
+        else
+            cout << "Not Found" << endl;
+    } catch (const KeyNotFoundException&) {
         cout << "Not Found" << endl;
     }
 }
 
 // ---------------------------------------------------------
 // DEL <key>
-// Same exists()-first guard as handleGet() — remove() also
-// exit(1)s on a missing key.
+// same exists()-first + catch pattern as handleGet()
 // ---------------------------------------------------------
-void RedisLite::handleDel(stringstream& ss) {
+void RedisLite::handleDel(stringstream& in) {
     string key;
-    ss >> key;
+    in >> key;
 
-    if (key.empty()) {
-        cout << "Usage: DEL <key>" << endl;
-        return;
-    }
+    if (key.empty())
+        throw invalid_argument("Usage: DEL <key>");
 
-    if (storage.exists(key)) {
-        storage.remove(key);
-        cout << "Deleted" << endl;
-    } else {
+    try {
+        if (storage.exists(key)) {
+            storage.remove(key);
+            cout << "Deleted" << endl;
+        } else {
+            cout << "Not Found" << endl;
+        }
+    } catch (const KeyNotFoundException&) {
         cout << "Not Found" << endl;
     }
 }
@@ -134,14 +166,12 @@ void RedisLite::handleDel(stringstream& ss) {
 // ---------------------------------------------------------
 // EXISTS <key>
 // ---------------------------------------------------------
-void RedisLite::handleExists(stringstream& ss) {
+void RedisLite::handleExists(stringstream& in) {
     string key;
-    ss >> key;
+    in >> key;
 
-    if (key.empty()) {
-        cout << "Usage: EXISTS <key>" << endl;
-        return;
-    }
+    if (key.empty())
+        throw invalid_argument("Usage: EXISTS <key>");
 
     cout << (storage.exists(key) ? "True" : "False") << endl;
 }

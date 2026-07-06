@@ -14,5 +14,7 @@ and the array resized on every append instead of only when full and removed elem
 After observing that manual memory management will be better in terms of learning if I want to study memory management better. Initially I believed that calling malloc() immediately created objects in memory similar to new(). This misunderstanding caused confusion while implementing insertion and copying.
 
 ### Section 3 - Memory Diagram
+![alt text](image-1.png)
+
 ### Section 4 - Learning Reflection
 Today my understanding of memory management changed significantly. I learned that allocating memory and constructing objects are two separate operations. malloc() only reserves raw memory, while placement new creates actual objects inside that memory. I also understood why STL containers manually manage object lifetime using placement new, explicit destructor calls, and free(). This approach gives much greater control over memory and helped me understand how std::vector works internally.

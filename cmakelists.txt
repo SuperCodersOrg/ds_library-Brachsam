@@ -5,12 +5,16 @@ project(CollectionsLibrary)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Header search paths
+enable_testing()
+
+add_subdirectory(external/googletest)
+
 include_directories(
     src/DynamicArray
-    src/LinkedList
+    "src/Linkedlist"
     src/HashMap
     src/RedisLite
+    src/Exceptions
 )
 
 # Dynamic Array
@@ -36,3 +40,23 @@ add_executable(
     RedisLite
     src/RedisLite/Redismain.cpp
 )
+
+# GoogleTest
+file(GLOB_RECURSE TEST_SOURCES
+    tests/*.cpp
+)
+
+add_executable(
+    CollectionTests
+    ${TEST_SOURCES}
+)
+
+target_link_libraries(
+    CollectionTests
+    PRIVATE
+    gtest
+    gtest_main
+)
+
+include(GoogleTest)
+gtest_discover_tests(CollectionTests)

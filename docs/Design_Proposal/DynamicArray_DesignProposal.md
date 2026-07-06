@@ -29,8 +29,8 @@ Creating a dynamic array that can store any data type and let T represent that p
 T must be copy-constructible. find/count/equal/mismatch/contains require operator==. min/max require operator<.
 
 ## Section 2
-### Dynamic Array and Linked List
-![](image.png)
+### Dynamic Array
+![alt text](image.png)
 
 ## Section 3
 ### DynamicArray Complexity Estimates
