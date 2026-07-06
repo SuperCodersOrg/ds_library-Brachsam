@@ -64,6 +64,16 @@ CMAKE_BINARY_DIR = C:\Users\brach\OneDrive\Documents\Project-01\build
 #=============================================================================
 # Targets provided globally by CMake.
 
+# Special rule for the target test
+test:
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Running tests..."
+	"C:\Program Files\CMake\bin\ctest.exe" $(ARGS)
+.PHONY : test
+
+# Special rule for the target test
+test/fast: test
+.PHONY : test/fast
+
 # Special rule for the target edit_cache
 edit_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Running CMake cache editor..."
@@ -83,6 +93,51 @@ rebuild_cache:
 # Special rule for the target rebuild_cache
 rebuild_cache/fast: rebuild_cache
 .PHONY : rebuild_cache/fast
+
+# Special rule for the target list_install_components
+list_install_components:
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Available install components are: \"gmock\" \"gtest\""
+.PHONY : list_install_components
+
+# Special rule for the target list_install_components
+list_install_components/fast: list_install_components
+.PHONY : list_install_components/fast
+
+# Special rule for the target install
+install: preinstall
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Install the project..."
+	"C:\Program Files\CMake\bin\cmake.exe" -P cmake_install.cmake
+.PHONY : install
+
+# Special rule for the target install
+install/fast: preinstall/fast
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Install the project..."
+	"C:\Program Files\CMake\bin\cmake.exe" -P cmake_install.cmake
+.PHONY : install/fast
+
+# Special rule for the target install/local
+install/local: preinstall
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Installing only the local directory..."
+	"C:\Program Files\CMake\bin\cmake.exe" -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
+.PHONY : install/local
+
+# Special rule for the target install/local
+install/local/fast: preinstall/fast
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Installing only the local directory..."
+	"C:\Program Files\CMake\bin\cmake.exe" -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
+.PHONY : install/local/fast
+
+# Special rule for the target install/strip
+install/strip: preinstall
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Installing the project stripped..."
+	"C:\Program Files\CMake\bin\cmake.exe" -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
+.PHONY : install/strip
+
+# Special rule for the target install/strip
+install/strip/fast: preinstall/fast
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Installing the project stripped..."
+	"C:\Program Files\CMake\bin\cmake.exe" -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
+.PHONY : install/strip/fast
 
 # The main all target
 all: cmake_check_build_system
@@ -166,6 +221,71 @@ RedisLite: cmake_check_build_system
 RedisLite/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\RedisLite.dir\build.make CMakeFiles/RedisLite.dir/build
 .PHONY : RedisLite/fast
+
+#=============================================================================
+# Target rules for targets named CollectionTests
+
+# Build rule for target.
+CollectionTests: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 CollectionTests
+.PHONY : CollectionTests
+
+# fast build rule for target.
+CollectionTests/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/build
+.PHONY : CollectionTests/fast
+
+#=============================================================================
+# Target rules for targets named gmock
+
+# Build rule for target.
+gmock: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 gmock
+.PHONY : gmock
+
+# fast build rule for target.
+gmock/fast:
+	$(MAKE) $(MAKESILENT) -f external\googletest\googlemock\CMakeFiles\gmock.dir\build.make external/googletest/googlemock/CMakeFiles/gmock.dir/build
+.PHONY : gmock/fast
+
+#=============================================================================
+# Target rules for targets named gmock_main
+
+# Build rule for target.
+gmock_main: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 gmock_main
+.PHONY : gmock_main
+
+# fast build rule for target.
+gmock_main/fast:
+	$(MAKE) $(MAKESILENT) -f external\googletest\googlemock\CMakeFiles\gmock_main.dir\build.make external/googletest/googlemock/CMakeFiles/gmock_main.dir/build
+.PHONY : gmock_main/fast
+
+#=============================================================================
+# Target rules for targets named gtest
+
+# Build rule for target.
+gtest: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 gtest
+.PHONY : gtest
+
+# fast build rule for target.
+gtest/fast:
+	$(MAKE) $(MAKESILENT) -f external\googletest\googletest\CMakeFiles\gtest.dir\build.make external/googletest/googletest/CMakeFiles/gtest.dir/build
+.PHONY : gtest/fast
+
+#=============================================================================
+# Target rules for targets named gtest_main
+
+# Build rule for target.
+gtest_main: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 gtest_main
+.PHONY : gtest_main
+
+# fast build rule for target.
+gtest_main/fast:
+	$(MAKE) $(MAKESILENT) -f external\googletest\googletest\CMakeFiles\gtest_main.dir\build.make external/googletest/googletest/CMakeFiles/gtest_main.dir/build
+.PHONY : gtest_main/fast
 
 src/DynamicArray/Dynamicmain.obj: src/DynamicArray/Dynamicmain.cpp.obj
 .PHONY : src/DynamicArray/Dynamicmain.obj
@@ -263,6 +383,894 @@ src/RedisLite/Redismain.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\RedisLite.dir\build.make CMakeFiles/RedisLite.dir/src/RedisLite/Redismain.cpp.s
 .PHONY : src/RedisLite/Redismain.cpp.s
 
+tests/DynamicArrayTests/append.obj: tests/DynamicArrayTests/append.cpp.obj
+.PHONY : tests/DynamicArrayTests/append.obj
+
+# target to build an object file
+tests/DynamicArrayTests/append.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/DynamicArrayTests/append.cpp.obj
+.PHONY : tests/DynamicArrayTests/append.cpp.obj
+
+tests/DynamicArrayTests/append.i: tests/DynamicArrayTests/append.cpp.i
+.PHONY : tests/DynamicArrayTests/append.i
+
+# target to preprocess a source file
+tests/DynamicArrayTests/append.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/DynamicArrayTests/append.cpp.i
+.PHONY : tests/DynamicArrayTests/append.cpp.i
+
+tests/DynamicArrayTests/append.s: tests/DynamicArrayTests/append.cpp.s
+.PHONY : tests/DynamicArrayTests/append.s
+
+# target to generate assembly for a file
+tests/DynamicArrayTests/append.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/DynamicArrayTests/append.cpp.s
+.PHONY : tests/DynamicArrayTests/append.cpp.s
+
+tests/DynamicArrayTests/assignment.obj: tests/DynamicArrayTests/assignment.cpp.obj
+.PHONY : tests/DynamicArrayTests/assignment.obj
+
+# target to build an object file
+tests/DynamicArrayTests/assignment.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/DynamicArrayTests/assignment.cpp.obj
+.PHONY : tests/DynamicArrayTests/assignment.cpp.obj
+
+tests/DynamicArrayTests/assignment.i: tests/DynamicArrayTests/assignment.cpp.i
+.PHONY : tests/DynamicArrayTests/assignment.i
+
+# target to preprocess a source file
+tests/DynamicArrayTests/assignment.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/DynamicArrayTests/assignment.cpp.i
+.PHONY : tests/DynamicArrayTests/assignment.cpp.i
+
+tests/DynamicArrayTests/assignment.s: tests/DynamicArrayTests/assignment.cpp.s
+.PHONY : tests/DynamicArrayTests/assignment.s
+
+# target to generate assembly for a file
+tests/DynamicArrayTests/assignment.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/DynamicArrayTests/assignment.cpp.s
+.PHONY : tests/DynamicArrayTests/assignment.cpp.s
+
+tests/DynamicArrayTests/copyconstructor.obj: tests/DynamicArrayTests/copyconstructor.cpp.obj
+.PHONY : tests/DynamicArrayTests/copyconstructor.obj
+
+# target to build an object file
+tests/DynamicArrayTests/copyconstructor.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/DynamicArrayTests/copyconstructor.cpp.obj
+.PHONY : tests/DynamicArrayTests/copyconstructor.cpp.obj
+
+tests/DynamicArrayTests/copyconstructor.i: tests/DynamicArrayTests/copyconstructor.cpp.i
+.PHONY : tests/DynamicArrayTests/copyconstructor.i
+
+# target to preprocess a source file
+tests/DynamicArrayTests/copyconstructor.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/DynamicArrayTests/copyconstructor.cpp.i
+.PHONY : tests/DynamicArrayTests/copyconstructor.cpp.i
+
+tests/DynamicArrayTests/copyconstructor.s: tests/DynamicArrayTests/copyconstructor.cpp.s
+.PHONY : tests/DynamicArrayTests/copyconstructor.s
+
+# target to generate assembly for a file
+tests/DynamicArrayTests/copyconstructor.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/DynamicArrayTests/copyconstructor.cpp.s
+.PHONY : tests/DynamicArrayTests/copyconstructor.cpp.s
+
+tests/DynamicArrayTests/destructor.obj: tests/DynamicArrayTests/destructor.cpp.obj
+.PHONY : tests/DynamicArrayTests/destructor.obj
+
+# target to build an object file
+tests/DynamicArrayTests/destructor.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/DynamicArrayTests/destructor.cpp.obj
+.PHONY : tests/DynamicArrayTests/destructor.cpp.obj
+
+tests/DynamicArrayTests/destructor.i: tests/DynamicArrayTests/destructor.cpp.i
+.PHONY : tests/DynamicArrayTests/destructor.i
+
+# target to preprocess a source file
+tests/DynamicArrayTests/destructor.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/DynamicArrayTests/destructor.cpp.i
+.PHONY : tests/DynamicArrayTests/destructor.cpp.i
+
+tests/DynamicArrayTests/destructor.s: tests/DynamicArrayTests/destructor.cpp.s
+.PHONY : tests/DynamicArrayTests/destructor.s
+
+# target to generate assembly for a file
+tests/DynamicArrayTests/destructor.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/DynamicArrayTests/destructor.cpp.s
+.PHONY : tests/DynamicArrayTests/destructor.cpp.s
+
+tests/DynamicArrayTests/get.obj: tests/DynamicArrayTests/get.cpp.obj
+.PHONY : tests/DynamicArrayTests/get.obj
+
+# target to build an object file
+tests/DynamicArrayTests/get.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/DynamicArrayTests/get.cpp.obj
+.PHONY : tests/DynamicArrayTests/get.cpp.obj
+
+tests/DynamicArrayTests/get.i: tests/DynamicArrayTests/get.cpp.i
+.PHONY : tests/DynamicArrayTests/get.i
+
+# target to preprocess a source file
+tests/DynamicArrayTests/get.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/DynamicArrayTests/get.cpp.i
+.PHONY : tests/DynamicArrayTests/get.cpp.i
+
+tests/DynamicArrayTests/get.s: tests/DynamicArrayTests/get.cpp.s
+.PHONY : tests/DynamicArrayTests/get.s
+
+# target to generate assembly for a file
+tests/DynamicArrayTests/get.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/DynamicArrayTests/get.cpp.s
+.PHONY : tests/DynamicArrayTests/get.cpp.s
+
+tests/DynamicArrayTests/insert.obj: tests/DynamicArrayTests/insert.cpp.obj
+.PHONY : tests/DynamicArrayTests/insert.obj
+
+# target to build an object file
+tests/DynamicArrayTests/insert.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/DynamicArrayTests/insert.cpp.obj
+.PHONY : tests/DynamicArrayTests/insert.cpp.obj
+
+tests/DynamicArrayTests/insert.i: tests/DynamicArrayTests/insert.cpp.i
+.PHONY : tests/DynamicArrayTests/insert.i
+
+# target to preprocess a source file
+tests/DynamicArrayTests/insert.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/DynamicArrayTests/insert.cpp.i
+.PHONY : tests/DynamicArrayTests/insert.cpp.i
+
+tests/DynamicArrayTests/insert.s: tests/DynamicArrayTests/insert.cpp.s
+.PHONY : tests/DynamicArrayTests/insert.s
+
+# target to generate assembly for a file
+tests/DynamicArrayTests/insert.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/DynamicArrayTests/insert.cpp.s
+.PHONY : tests/DynamicArrayTests/insert.cpp.s
+
+tests/DynamicArrayTests/remove.obj: tests/DynamicArrayTests/remove.cpp.obj
+.PHONY : tests/DynamicArrayTests/remove.obj
+
+# target to build an object file
+tests/DynamicArrayTests/remove.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/DynamicArrayTests/remove.cpp.obj
+.PHONY : tests/DynamicArrayTests/remove.cpp.obj
+
+tests/DynamicArrayTests/remove.i: tests/DynamicArrayTests/remove.cpp.i
+.PHONY : tests/DynamicArrayTests/remove.i
+
+# target to preprocess a source file
+tests/DynamicArrayTests/remove.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/DynamicArrayTests/remove.cpp.i
+.PHONY : tests/DynamicArrayTests/remove.cpp.i
+
+tests/DynamicArrayTests/remove.s: tests/DynamicArrayTests/remove.cpp.s
+.PHONY : tests/DynamicArrayTests/remove.s
+
+# target to generate assembly for a file
+tests/DynamicArrayTests/remove.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/DynamicArrayTests/remove.cpp.s
+.PHONY : tests/DynamicArrayTests/remove.cpp.s
+
+tests/DynamicArrayTests/sizecapacity.obj: tests/DynamicArrayTests/sizecapacity.cpp.obj
+.PHONY : tests/DynamicArrayTests/sizecapacity.obj
+
+# target to build an object file
+tests/DynamicArrayTests/sizecapacity.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/DynamicArrayTests/sizecapacity.cpp.obj
+.PHONY : tests/DynamicArrayTests/sizecapacity.cpp.obj
+
+tests/DynamicArrayTests/sizecapacity.i: tests/DynamicArrayTests/sizecapacity.cpp.i
+.PHONY : tests/DynamicArrayTests/sizecapacity.i
+
+# target to preprocess a source file
+tests/DynamicArrayTests/sizecapacity.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/DynamicArrayTests/sizecapacity.cpp.i
+.PHONY : tests/DynamicArrayTests/sizecapacity.cpp.i
+
+tests/DynamicArrayTests/sizecapacity.s: tests/DynamicArrayTests/sizecapacity.cpp.s
+.PHONY : tests/DynamicArrayTests/sizecapacity.s
+
+# target to generate assembly for a file
+tests/DynamicArrayTests/sizecapacity.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/DynamicArrayTests/sizecapacity.cpp.s
+.PHONY : tests/DynamicArrayTests/sizecapacity.cpp.s
+
+tests/HashMapTests/clear.obj: tests/HashMapTests/clear.cpp.obj
+.PHONY : tests/HashMapTests/clear.obj
+
+# target to build an object file
+tests/HashMapTests/clear.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/HashMapTests/clear.cpp.obj
+.PHONY : tests/HashMapTests/clear.cpp.obj
+
+tests/HashMapTests/clear.i: tests/HashMapTests/clear.cpp.i
+.PHONY : tests/HashMapTests/clear.i
+
+# target to preprocess a source file
+tests/HashMapTests/clear.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/HashMapTests/clear.cpp.i
+.PHONY : tests/HashMapTests/clear.cpp.i
+
+tests/HashMapTests/clear.s: tests/HashMapTests/clear.cpp.s
+.PHONY : tests/HashMapTests/clear.s
+
+# target to generate assembly for a file
+tests/HashMapTests/clear.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/HashMapTests/clear.cpp.s
+.PHONY : tests/HashMapTests/clear.cpp.s
+
+tests/HashMapTests/defaultConstructor.obj: tests/HashMapTests/defaultConstructor.cpp.obj
+.PHONY : tests/HashMapTests/defaultConstructor.obj
+
+# target to build an object file
+tests/HashMapTests/defaultConstructor.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/HashMapTests/defaultConstructor.cpp.obj
+.PHONY : tests/HashMapTests/defaultConstructor.cpp.obj
+
+tests/HashMapTests/defaultConstructor.i: tests/HashMapTests/defaultConstructor.cpp.i
+.PHONY : tests/HashMapTests/defaultConstructor.i
+
+# target to preprocess a source file
+tests/HashMapTests/defaultConstructor.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/HashMapTests/defaultConstructor.cpp.i
+.PHONY : tests/HashMapTests/defaultConstructor.cpp.i
+
+tests/HashMapTests/defaultConstructor.s: tests/HashMapTests/defaultConstructor.cpp.s
+.PHONY : tests/HashMapTests/defaultConstructor.s
+
+# target to generate assembly for a file
+tests/HashMapTests/defaultConstructor.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/HashMapTests/defaultConstructor.cpp.s
+.PHONY : tests/HashMapTests/defaultConstructor.cpp.s
+
+tests/HashMapTests/exists.obj: tests/HashMapTests/exists.cpp.obj
+.PHONY : tests/HashMapTests/exists.obj
+
+# target to build an object file
+tests/HashMapTests/exists.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/HashMapTests/exists.cpp.obj
+.PHONY : tests/HashMapTests/exists.cpp.obj
+
+tests/HashMapTests/exists.i: tests/HashMapTests/exists.cpp.i
+.PHONY : tests/HashMapTests/exists.i
+
+# target to preprocess a source file
+tests/HashMapTests/exists.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/HashMapTests/exists.cpp.i
+.PHONY : tests/HashMapTests/exists.cpp.i
+
+tests/HashMapTests/exists.s: tests/HashMapTests/exists.cpp.s
+.PHONY : tests/HashMapTests/exists.s
+
+# target to generate assembly for a file
+tests/HashMapTests/exists.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/HashMapTests/exists.cpp.s
+.PHONY : tests/HashMapTests/exists.cpp.s
+
+tests/HashMapTests/get.obj: tests/HashMapTests/get.cpp.obj
+.PHONY : tests/HashMapTests/get.obj
+
+# target to build an object file
+tests/HashMapTests/get.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/HashMapTests/get.cpp.obj
+.PHONY : tests/HashMapTests/get.cpp.obj
+
+tests/HashMapTests/get.i: tests/HashMapTests/get.cpp.i
+.PHONY : tests/HashMapTests/get.i
+
+# target to preprocess a source file
+tests/HashMapTests/get.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/HashMapTests/get.cpp.i
+.PHONY : tests/HashMapTests/get.cpp.i
+
+tests/HashMapTests/get.s: tests/HashMapTests/get.cpp.s
+.PHONY : tests/HashMapTests/get.s
+
+# target to generate assembly for a file
+tests/HashMapTests/get.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/HashMapTests/get.cpp.s
+.PHONY : tests/HashMapTests/get.cpp.s
+
+tests/HashMapTests/keys.obj: tests/HashMapTests/keys.cpp.obj
+.PHONY : tests/HashMapTests/keys.obj
+
+# target to build an object file
+tests/HashMapTests/keys.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/HashMapTests/keys.cpp.obj
+.PHONY : tests/HashMapTests/keys.cpp.obj
+
+tests/HashMapTests/keys.i: tests/HashMapTests/keys.cpp.i
+.PHONY : tests/HashMapTests/keys.i
+
+# target to preprocess a source file
+tests/HashMapTests/keys.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/HashMapTests/keys.cpp.i
+.PHONY : tests/HashMapTests/keys.cpp.i
+
+tests/HashMapTests/keys.s: tests/HashMapTests/keys.cpp.s
+.PHONY : tests/HashMapTests/keys.s
+
+# target to generate assembly for a file
+tests/HashMapTests/keys.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/HashMapTests/keys.cpp.s
+.PHONY : tests/HashMapTests/keys.cpp.s
+
+tests/HashMapTests/loadfactor.obj: tests/HashMapTests/loadfactor.cpp.obj
+.PHONY : tests/HashMapTests/loadfactor.obj
+
+# target to build an object file
+tests/HashMapTests/loadfactor.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/HashMapTests/loadfactor.cpp.obj
+.PHONY : tests/HashMapTests/loadfactor.cpp.obj
+
+tests/HashMapTests/loadfactor.i: tests/HashMapTests/loadfactor.cpp.i
+.PHONY : tests/HashMapTests/loadfactor.i
+
+# target to preprocess a source file
+tests/HashMapTests/loadfactor.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/HashMapTests/loadfactor.cpp.i
+.PHONY : tests/HashMapTests/loadfactor.cpp.i
+
+tests/HashMapTests/loadfactor.s: tests/HashMapTests/loadfactor.cpp.s
+.PHONY : tests/HashMapTests/loadfactor.s
+
+# target to generate assembly for a file
+tests/HashMapTests/loadfactor.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/HashMapTests/loadfactor.cpp.s
+.PHONY : tests/HashMapTests/loadfactor.cpp.s
+
+tests/HashMapTests/merge.obj: tests/HashMapTests/merge.cpp.obj
+.PHONY : tests/HashMapTests/merge.obj
+
+# target to build an object file
+tests/HashMapTests/merge.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/HashMapTests/merge.cpp.obj
+.PHONY : tests/HashMapTests/merge.cpp.obj
+
+tests/HashMapTests/merge.i: tests/HashMapTests/merge.cpp.i
+.PHONY : tests/HashMapTests/merge.i
+
+# target to preprocess a source file
+tests/HashMapTests/merge.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/HashMapTests/merge.cpp.i
+.PHONY : tests/HashMapTests/merge.cpp.i
+
+tests/HashMapTests/merge.s: tests/HashMapTests/merge.cpp.s
+.PHONY : tests/HashMapTests/merge.s
+
+# target to generate assembly for a file
+tests/HashMapTests/merge.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/HashMapTests/merge.cpp.s
+.PHONY : tests/HashMapTests/merge.cpp.s
+
+tests/HashMapTests/remove.obj: tests/HashMapTests/remove.cpp.obj
+.PHONY : tests/HashMapTests/remove.obj
+
+# target to build an object file
+tests/HashMapTests/remove.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/HashMapTests/remove.cpp.obj
+.PHONY : tests/HashMapTests/remove.cpp.obj
+
+tests/HashMapTests/remove.i: tests/HashMapTests/remove.cpp.i
+.PHONY : tests/HashMapTests/remove.i
+
+# target to preprocess a source file
+tests/HashMapTests/remove.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/HashMapTests/remove.cpp.i
+.PHONY : tests/HashMapTests/remove.cpp.i
+
+tests/HashMapTests/remove.s: tests/HashMapTests/remove.cpp.s
+.PHONY : tests/HashMapTests/remove.s
+
+# target to generate assembly for a file
+tests/HashMapTests/remove.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/HashMapTests/remove.cpp.s
+.PHONY : tests/HashMapTests/remove.cpp.s
+
+tests/HashMapTests/set.obj: tests/HashMapTests/set.cpp.obj
+.PHONY : tests/HashMapTests/set.obj
+
+# target to build an object file
+tests/HashMapTests/set.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/HashMapTests/set.cpp.obj
+.PHONY : tests/HashMapTests/set.cpp.obj
+
+tests/HashMapTests/set.i: tests/HashMapTests/set.cpp.i
+.PHONY : tests/HashMapTests/set.i
+
+# target to preprocess a source file
+tests/HashMapTests/set.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/HashMapTests/set.cpp.i
+.PHONY : tests/HashMapTests/set.cpp.i
+
+tests/HashMapTests/set.s: tests/HashMapTests/set.cpp.s
+.PHONY : tests/HashMapTests/set.s
+
+# target to generate assembly for a file
+tests/HashMapTests/set.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/HashMapTests/set.cpp.s
+.PHONY : tests/HashMapTests/set.cpp.s
+
+tests/HashMapTests/size.obj: tests/HashMapTests/size.cpp.obj
+.PHONY : tests/HashMapTests/size.obj
+
+# target to build an object file
+tests/HashMapTests/size.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/HashMapTests/size.cpp.obj
+.PHONY : tests/HashMapTests/size.cpp.obj
+
+tests/HashMapTests/size.i: tests/HashMapTests/size.cpp.i
+.PHONY : tests/HashMapTests/size.i
+
+# target to preprocess a source file
+tests/HashMapTests/size.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/HashMapTests/size.cpp.i
+.PHONY : tests/HashMapTests/size.cpp.i
+
+tests/HashMapTests/size.s: tests/HashMapTests/size.cpp.s
+.PHONY : tests/HashMapTests/size.s
+
+# target to generate assembly for a file
+tests/HashMapTests/size.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/HashMapTests/size.cpp.s
+.PHONY : tests/HashMapTests/size.cpp.s
+
+tests/HashMapTests/values.obj: tests/HashMapTests/values.cpp.obj
+.PHONY : tests/HashMapTests/values.obj
+
+# target to build an object file
+tests/HashMapTests/values.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/HashMapTests/values.cpp.obj
+.PHONY : tests/HashMapTests/values.cpp.obj
+
+tests/HashMapTests/values.i: tests/HashMapTests/values.cpp.i
+.PHONY : tests/HashMapTests/values.i
+
+# target to preprocess a source file
+tests/HashMapTests/values.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/HashMapTests/values.cpp.i
+.PHONY : tests/HashMapTests/values.cpp.i
+
+tests/HashMapTests/values.s: tests/HashMapTests/values.cpp.s
+.PHONY : tests/HashMapTests/values.s
+
+# target to generate assembly for a file
+tests/HashMapTests/values.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/HashMapTests/values.cpp.s
+.PHONY : tests/HashMapTests/values.cpp.s
+
+tests/LinkedListTests/assignmentoperator.obj: tests/LinkedListTests/assignmentoperator.cpp.obj
+.PHONY : tests/LinkedListTests/assignmentoperator.obj
+
+# target to build an object file
+tests/LinkedListTests/assignmentoperator.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/LinkedListTests/assignmentoperator.cpp.obj
+.PHONY : tests/LinkedListTests/assignmentoperator.cpp.obj
+
+tests/LinkedListTests/assignmentoperator.i: tests/LinkedListTests/assignmentoperator.cpp.i
+.PHONY : tests/LinkedListTests/assignmentoperator.i
+
+# target to preprocess a source file
+tests/LinkedListTests/assignmentoperator.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/LinkedListTests/assignmentoperator.cpp.i
+.PHONY : tests/LinkedListTests/assignmentoperator.cpp.i
+
+tests/LinkedListTests/assignmentoperator.s: tests/LinkedListTests/assignmentoperator.cpp.s
+.PHONY : tests/LinkedListTests/assignmentoperator.s
+
+# target to generate assembly for a file
+tests/LinkedListTests/assignmentoperator.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/LinkedListTests/assignmentoperator.cpp.s
+.PHONY : tests/LinkedListTests/assignmentoperator.cpp.s
+
+tests/LinkedListTests/clear.obj: tests/LinkedListTests/clear.cpp.obj
+.PHONY : tests/LinkedListTests/clear.obj
+
+# target to build an object file
+tests/LinkedListTests/clear.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/LinkedListTests/clear.cpp.obj
+.PHONY : tests/LinkedListTests/clear.cpp.obj
+
+tests/LinkedListTests/clear.i: tests/LinkedListTests/clear.cpp.i
+.PHONY : tests/LinkedListTests/clear.i
+
+# target to preprocess a source file
+tests/LinkedListTests/clear.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/LinkedListTests/clear.cpp.i
+.PHONY : tests/LinkedListTests/clear.cpp.i
+
+tests/LinkedListTests/clear.s: tests/LinkedListTests/clear.cpp.s
+.PHONY : tests/LinkedListTests/clear.s
+
+# target to generate assembly for a file
+tests/LinkedListTests/clear.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/LinkedListTests/clear.cpp.s
+.PHONY : tests/LinkedListTests/clear.cpp.s
+
+tests/LinkedListTests/copyconstructor.obj: tests/LinkedListTests/copyconstructor.cpp.obj
+.PHONY : tests/LinkedListTests/copyconstructor.obj
+
+# target to build an object file
+tests/LinkedListTests/copyconstructor.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/LinkedListTests/copyconstructor.cpp.obj
+.PHONY : tests/LinkedListTests/copyconstructor.cpp.obj
+
+tests/LinkedListTests/copyconstructor.i: tests/LinkedListTests/copyconstructor.cpp.i
+.PHONY : tests/LinkedListTests/copyconstructor.i
+
+# target to preprocess a source file
+tests/LinkedListTests/copyconstructor.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/LinkedListTests/copyconstructor.cpp.i
+.PHONY : tests/LinkedListTests/copyconstructor.cpp.i
+
+tests/LinkedListTests/copyconstructor.s: tests/LinkedListTests/copyconstructor.cpp.s
+.PHONY : tests/LinkedListTests/copyconstructor.s
+
+# target to generate assembly for a file
+tests/LinkedListTests/copyconstructor.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/LinkedListTests/copyconstructor.cpp.s
+.PHONY : tests/LinkedListTests/copyconstructor.cpp.s
+
+tests/LinkedListTests/ddeleteback.obj: tests/LinkedListTests/ddeleteback.cpp.obj
+.PHONY : tests/LinkedListTests/ddeleteback.obj
+
+# target to build an object file
+tests/LinkedListTests/ddeleteback.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/LinkedListTests/ddeleteback.cpp.obj
+.PHONY : tests/LinkedListTests/ddeleteback.cpp.obj
+
+tests/LinkedListTests/ddeleteback.i: tests/LinkedListTests/ddeleteback.cpp.i
+.PHONY : tests/LinkedListTests/ddeleteback.i
+
+# target to preprocess a source file
+tests/LinkedListTests/ddeleteback.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/LinkedListTests/ddeleteback.cpp.i
+.PHONY : tests/LinkedListTests/ddeleteback.cpp.i
+
+tests/LinkedListTests/ddeleteback.s: tests/LinkedListTests/ddeleteback.cpp.s
+.PHONY : tests/LinkedListTests/ddeleteback.s
+
+# target to generate assembly for a file
+tests/LinkedListTests/ddeleteback.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/LinkedListTests/ddeleteback.cpp.s
+.PHONY : tests/LinkedListTests/ddeleteback.cpp.s
+
+tests/LinkedListTests/defaultconstructor.obj: tests/LinkedListTests/defaultconstructor.cpp.obj
+.PHONY : tests/LinkedListTests/defaultconstructor.obj
+
+# target to build an object file
+tests/LinkedListTests/defaultconstructor.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/LinkedListTests/defaultconstructor.cpp.obj
+.PHONY : tests/LinkedListTests/defaultconstructor.cpp.obj
+
+tests/LinkedListTests/defaultconstructor.i: tests/LinkedListTests/defaultconstructor.cpp.i
+.PHONY : tests/LinkedListTests/defaultconstructor.i
+
+# target to preprocess a source file
+tests/LinkedListTests/defaultconstructor.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/LinkedListTests/defaultconstructor.cpp.i
+.PHONY : tests/LinkedListTests/defaultconstructor.cpp.i
+
+tests/LinkedListTests/defaultconstructor.s: tests/LinkedListTests/defaultconstructor.cpp.s
+.PHONY : tests/LinkedListTests/defaultconstructor.s
+
+# target to generate assembly for a file
+tests/LinkedListTests/defaultconstructor.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/LinkedListTests/defaultconstructor.cpp.s
+.PHONY : tests/LinkedListTests/defaultconstructor.cpp.s
+
+tests/LinkedListTests/deleteback.obj: tests/LinkedListTests/deleteback.cpp.obj
+.PHONY : tests/LinkedListTests/deleteback.obj
+
+# target to build an object file
+tests/LinkedListTests/deleteback.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/LinkedListTests/deleteback.cpp.obj
+.PHONY : tests/LinkedListTests/deleteback.cpp.obj
+
+tests/LinkedListTests/deleteback.i: tests/LinkedListTests/deleteback.cpp.i
+.PHONY : tests/LinkedListTests/deleteback.i
+
+# target to preprocess a source file
+tests/LinkedListTests/deleteback.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/LinkedListTests/deleteback.cpp.i
+.PHONY : tests/LinkedListTests/deleteback.cpp.i
+
+tests/LinkedListTests/deleteback.s: tests/LinkedListTests/deleteback.cpp.s
+.PHONY : tests/LinkedListTests/deleteback.s
+
+# target to generate assembly for a file
+tests/LinkedListTests/deleteback.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/LinkedListTests/deleteback.cpp.s
+.PHONY : tests/LinkedListTests/deleteback.cpp.s
+
+tests/LinkedListTests/deletefront.obj: tests/LinkedListTests/deletefront.cpp.obj
+.PHONY : tests/LinkedListTests/deletefront.obj
+
+# target to build an object file
+tests/LinkedListTests/deletefront.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/LinkedListTests/deletefront.cpp.obj
+.PHONY : tests/LinkedListTests/deletefront.cpp.obj
+
+tests/LinkedListTests/deletefront.i: tests/LinkedListTests/deletefront.cpp.i
+.PHONY : tests/LinkedListTests/deletefront.i
+
+# target to preprocess a source file
+tests/LinkedListTests/deletefront.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/LinkedListTests/deletefront.cpp.i
+.PHONY : tests/LinkedListTests/deletefront.cpp.i
+
+tests/LinkedListTests/deletefront.s: tests/LinkedListTests/deletefront.cpp.s
+.PHONY : tests/LinkedListTests/deletefront.s
+
+# target to generate assembly for a file
+tests/LinkedListTests/deletefront.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/LinkedListTests/deletefront.cpp.s
+.PHONY : tests/LinkedListTests/deletefront.cpp.s
+
+tests/LinkedListTests/destructor.obj: tests/LinkedListTests/destructor.cpp.obj
+.PHONY : tests/LinkedListTests/destructor.obj
+
+# target to build an object file
+tests/LinkedListTests/destructor.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/LinkedListTests/destructor.cpp.obj
+.PHONY : tests/LinkedListTests/destructor.cpp.obj
+
+tests/LinkedListTests/destructor.i: tests/LinkedListTests/destructor.cpp.i
+.PHONY : tests/LinkedListTests/destructor.i
+
+# target to preprocess a source file
+tests/LinkedListTests/destructor.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/LinkedListTests/destructor.cpp.i
+.PHONY : tests/LinkedListTests/destructor.cpp.i
+
+tests/LinkedListTests/destructor.s: tests/LinkedListTests/destructor.cpp.s
+.PHONY : tests/LinkedListTests/destructor.s
+
+# target to generate assembly for a file
+tests/LinkedListTests/destructor.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/LinkedListTests/destructor.cpp.s
+.PHONY : tests/LinkedListTests/destructor.cpp.s
+
+tests/LinkedListTests/dinsertindex.obj: tests/LinkedListTests/dinsertindex.cpp.obj
+.PHONY : tests/LinkedListTests/dinsertindex.obj
+
+# target to build an object file
+tests/LinkedListTests/dinsertindex.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/LinkedListTests/dinsertindex.cpp.obj
+.PHONY : tests/LinkedListTests/dinsertindex.cpp.obj
+
+tests/LinkedListTests/dinsertindex.i: tests/LinkedListTests/dinsertindex.cpp.i
+.PHONY : tests/LinkedListTests/dinsertindex.i
+
+# target to preprocess a source file
+tests/LinkedListTests/dinsertindex.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/LinkedListTests/dinsertindex.cpp.i
+.PHONY : tests/LinkedListTests/dinsertindex.cpp.i
+
+tests/LinkedListTests/dinsertindex.s: tests/LinkedListTests/dinsertindex.cpp.s
+.PHONY : tests/LinkedListTests/dinsertindex.s
+
+# target to generate assembly for a file
+tests/LinkedListTests/dinsertindex.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/LinkedListTests/dinsertindex.cpp.s
+.PHONY : tests/LinkedListTests/dinsertindex.cpp.s
+
+tests/LinkedListTests/dremove.obj: tests/LinkedListTests/dremove.cpp.obj
+.PHONY : tests/LinkedListTests/dremove.obj
+
+# target to build an object file
+tests/LinkedListTests/dremove.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/LinkedListTests/dremove.cpp.obj
+.PHONY : tests/LinkedListTests/dremove.cpp.obj
+
+tests/LinkedListTests/dremove.i: tests/LinkedListTests/dremove.cpp.i
+.PHONY : tests/LinkedListTests/dremove.i
+
+# target to preprocess a source file
+tests/LinkedListTests/dremove.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/LinkedListTests/dremove.cpp.i
+.PHONY : tests/LinkedListTests/dremove.cpp.i
+
+tests/LinkedListTests/dremove.s: tests/LinkedListTests/dremove.cpp.s
+.PHONY : tests/LinkedListTests/dremove.s
+
+# target to generate assembly for a file
+tests/LinkedListTests/dremove.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/LinkedListTests/dremove.cpp.s
+.PHONY : tests/LinkedListTests/dremove.cpp.s
+
+tests/LinkedListTests/dremoveval.obj: tests/LinkedListTests/dremoveval.cpp.obj
+.PHONY : tests/LinkedListTests/dremoveval.obj
+
+# target to build an object file
+tests/LinkedListTests/dremoveval.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/LinkedListTests/dremoveval.cpp.obj
+.PHONY : tests/LinkedListTests/dremoveval.cpp.obj
+
+tests/LinkedListTests/dremoveval.i: tests/LinkedListTests/dremoveval.cpp.i
+.PHONY : tests/LinkedListTests/dremoveval.i
+
+# target to preprocess a source file
+tests/LinkedListTests/dremoveval.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/LinkedListTests/dremoveval.cpp.i
+.PHONY : tests/LinkedListTests/dremoveval.cpp.i
+
+tests/LinkedListTests/dremoveval.s: tests/LinkedListTests/dremoveval.cpp.s
+.PHONY : tests/LinkedListTests/dremoveval.s
+
+# target to generate assembly for a file
+tests/LinkedListTests/dremoveval.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/LinkedListTests/dremoveval.cpp.s
+.PHONY : tests/LinkedListTests/dremoveval.cpp.s
+
+tests/LinkedListTests/get.obj: tests/LinkedListTests/get.cpp.obj
+.PHONY : tests/LinkedListTests/get.obj
+
+# target to build an object file
+tests/LinkedListTests/get.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/LinkedListTests/get.cpp.obj
+.PHONY : tests/LinkedListTests/get.cpp.obj
+
+tests/LinkedListTests/get.i: tests/LinkedListTests/get.cpp.i
+.PHONY : tests/LinkedListTests/get.i
+
+# target to preprocess a source file
+tests/LinkedListTests/get.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/LinkedListTests/get.cpp.i
+.PHONY : tests/LinkedListTests/get.cpp.i
+
+tests/LinkedListTests/get.s: tests/LinkedListTests/get.cpp.s
+.PHONY : tests/LinkedListTests/get.s
+
+# target to generate assembly for a file
+tests/LinkedListTests/get.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/LinkedListTests/get.cpp.s
+.PHONY : tests/LinkedListTests/get.cpp.s
+
+tests/LinkedListTests/indexinsertion.obj: tests/LinkedListTests/indexinsertion.cpp.obj
+.PHONY : tests/LinkedListTests/indexinsertion.obj
+
+# target to build an object file
+tests/LinkedListTests/indexinsertion.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/LinkedListTests/indexinsertion.cpp.obj
+.PHONY : tests/LinkedListTests/indexinsertion.cpp.obj
+
+tests/LinkedListTests/indexinsertion.i: tests/LinkedListTests/indexinsertion.cpp.i
+.PHONY : tests/LinkedListTests/indexinsertion.i
+
+# target to preprocess a source file
+tests/LinkedListTests/indexinsertion.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/LinkedListTests/indexinsertion.cpp.i
+.PHONY : tests/LinkedListTests/indexinsertion.cpp.i
+
+tests/LinkedListTests/indexinsertion.s: tests/LinkedListTests/indexinsertion.cpp.s
+.PHONY : tests/LinkedListTests/indexinsertion.s
+
+# target to generate assembly for a file
+tests/LinkedListTests/indexinsertion.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/LinkedListTests/indexinsertion.cpp.s
+.PHONY : tests/LinkedListTests/indexinsertion.cpp.s
+
+tests/LinkedListTests/insertback.obj: tests/LinkedListTests/insertback.cpp.obj
+.PHONY : tests/LinkedListTests/insertback.obj
+
+# target to build an object file
+tests/LinkedListTests/insertback.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/LinkedListTests/insertback.cpp.obj
+.PHONY : tests/LinkedListTests/insertback.cpp.obj
+
+tests/LinkedListTests/insertback.i: tests/LinkedListTests/insertback.cpp.i
+.PHONY : tests/LinkedListTests/insertback.i
+
+# target to preprocess a source file
+tests/LinkedListTests/insertback.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/LinkedListTests/insertback.cpp.i
+.PHONY : tests/LinkedListTests/insertback.cpp.i
+
+tests/LinkedListTests/insertback.s: tests/LinkedListTests/insertback.cpp.s
+.PHONY : tests/LinkedListTests/insertback.s
+
+# target to generate assembly for a file
+tests/LinkedListTests/insertback.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/LinkedListTests/insertback.cpp.s
+.PHONY : tests/LinkedListTests/insertback.cpp.s
+
+tests/LinkedListTests/insertfront.obj: tests/LinkedListTests/insertfront.cpp.obj
+.PHONY : tests/LinkedListTests/insertfront.obj
+
+# target to build an object file
+tests/LinkedListTests/insertfront.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/LinkedListTests/insertfront.cpp.obj
+.PHONY : tests/LinkedListTests/insertfront.cpp.obj
+
+tests/LinkedListTests/insertfront.i: tests/LinkedListTests/insertfront.cpp.i
+.PHONY : tests/LinkedListTests/insertfront.i
+
+# target to preprocess a source file
+tests/LinkedListTests/insertfront.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/LinkedListTests/insertfront.cpp.i
+.PHONY : tests/LinkedListTests/insertfront.cpp.i
+
+tests/LinkedListTests/insertfront.s: tests/LinkedListTests/insertfront.cpp.s
+.PHONY : tests/LinkedListTests/insertfront.s
+
+# target to generate assembly for a file
+tests/LinkedListTests/insertfront.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/LinkedListTests/insertfront.cpp.s
+.PHONY : tests/LinkedListTests/insertfront.cpp.s
+
+tests/LinkedListTests/removeindex.obj: tests/LinkedListTests/removeindex.cpp.obj
+.PHONY : tests/LinkedListTests/removeindex.obj
+
+# target to build an object file
+tests/LinkedListTests/removeindex.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/LinkedListTests/removeindex.cpp.obj
+.PHONY : tests/LinkedListTests/removeindex.cpp.obj
+
+tests/LinkedListTests/removeindex.i: tests/LinkedListTests/removeindex.cpp.i
+.PHONY : tests/LinkedListTests/removeindex.i
+
+# target to preprocess a source file
+tests/LinkedListTests/removeindex.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/LinkedListTests/removeindex.cpp.i
+.PHONY : tests/LinkedListTests/removeindex.cpp.i
+
+tests/LinkedListTests/removeindex.s: tests/LinkedListTests/removeindex.cpp.s
+.PHONY : tests/LinkedListTests/removeindex.s
+
+# target to generate assembly for a file
+tests/LinkedListTests/removeindex.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/LinkedListTests/removeindex.cpp.s
+.PHONY : tests/LinkedListTests/removeindex.cpp.s
+
+tests/LinkedListTests/search.obj: tests/LinkedListTests/search.cpp.obj
+.PHONY : tests/LinkedListTests/search.obj
+
+# target to build an object file
+tests/LinkedListTests/search.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/LinkedListTests/search.cpp.obj
+.PHONY : tests/LinkedListTests/search.cpp.obj
+
+tests/LinkedListTests/search.i: tests/LinkedListTests/search.cpp.i
+.PHONY : tests/LinkedListTests/search.i
+
+# target to preprocess a source file
+tests/LinkedListTests/search.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/LinkedListTests/search.cpp.i
+.PHONY : tests/LinkedListTests/search.cpp.i
+
+tests/LinkedListTests/search.s: tests/LinkedListTests/search.cpp.s
+.PHONY : tests/LinkedListTests/search.s
+
+# target to generate assembly for a file
+tests/LinkedListTests/search.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/LinkedListTests/search.cpp.s
+.PHONY : tests/LinkedListTests/search.cpp.s
+
+tests/LinkedListTests/size.obj: tests/LinkedListTests/size.cpp.obj
+.PHONY : tests/LinkedListTests/size.obj
+
+# target to build an object file
+tests/LinkedListTests/size.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/LinkedListTests/size.cpp.obj
+.PHONY : tests/LinkedListTests/size.cpp.obj
+
+tests/LinkedListTests/size.i: tests/LinkedListTests/size.cpp.i
+.PHONY : tests/LinkedListTests/size.i
+
+# target to preprocess a source file
+tests/LinkedListTests/size.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/LinkedListTests/size.cpp.i
+.PHONY : tests/LinkedListTests/size.cpp.i
+
+tests/LinkedListTests/size.s: tests/LinkedListTests/size.cpp.s
+.PHONY : tests/LinkedListTests/size.s
+
+# target to generate assembly for a file
+tests/LinkedListTests/size.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CollectionTests.dir\build.make CMakeFiles/CollectionTests.dir/tests/LinkedListTests/size.cpp.s
+.PHONY : tests/LinkedListTests/size.cpp.s
+
 # Help Target
 help:
 	@echo The following are some of the valid targets for this Makefile:
@@ -270,11 +1278,21 @@ help:
 	@echo ... clean
 	@echo ... depend
 	@echo ... edit_cache
+	@echo ... install
+	@echo ... install/local
+	@echo ... install/strip
+	@echo ... list_install_components
 	@echo ... rebuild_cache
+	@echo ... test
+	@echo ... CollectionTests
 	@echo ... DynamicArray
 	@echo ... HashMap
 	@echo ... LinkedList
 	@echo ... RedisLite
+	@echo ... gmock
+	@echo ... gmock_main
+	@echo ... gtest
+	@echo ... gtest_main
 	@echo ... src/DynamicArray/Dynamicmain.obj
 	@echo ... src/DynamicArray/Dynamicmain.i
 	@echo ... src/DynamicArray/Dynamicmain.s
@@ -287,6 +1305,117 @@ help:
 	@echo ... src/RedisLite/Redismain.obj
 	@echo ... src/RedisLite/Redismain.i
 	@echo ... src/RedisLite/Redismain.s
+	@echo ... tests/DynamicArrayTests/append.obj
+	@echo ... tests/DynamicArrayTests/append.i
+	@echo ... tests/DynamicArrayTests/append.s
+	@echo ... tests/DynamicArrayTests/assignment.obj
+	@echo ... tests/DynamicArrayTests/assignment.i
+	@echo ... tests/DynamicArrayTests/assignment.s
+	@echo ... tests/DynamicArrayTests/copyconstructor.obj
+	@echo ... tests/DynamicArrayTests/copyconstructor.i
+	@echo ... tests/DynamicArrayTests/copyconstructor.s
+	@echo ... tests/DynamicArrayTests/destructor.obj
+	@echo ... tests/DynamicArrayTests/destructor.i
+	@echo ... tests/DynamicArrayTests/destructor.s
+	@echo ... tests/DynamicArrayTests/get.obj
+	@echo ... tests/DynamicArrayTests/get.i
+	@echo ... tests/DynamicArrayTests/get.s
+	@echo ... tests/DynamicArrayTests/insert.obj
+	@echo ... tests/DynamicArrayTests/insert.i
+	@echo ... tests/DynamicArrayTests/insert.s
+	@echo ... tests/DynamicArrayTests/remove.obj
+	@echo ... tests/DynamicArrayTests/remove.i
+	@echo ... tests/DynamicArrayTests/remove.s
+	@echo ... tests/DynamicArrayTests/sizecapacity.obj
+	@echo ... tests/DynamicArrayTests/sizecapacity.i
+	@echo ... tests/DynamicArrayTests/sizecapacity.s
+	@echo ... tests/HashMapTests/clear.obj
+	@echo ... tests/HashMapTests/clear.i
+	@echo ... tests/HashMapTests/clear.s
+	@echo ... tests/HashMapTests/defaultConstructor.obj
+	@echo ... tests/HashMapTests/defaultConstructor.i
+	@echo ... tests/HashMapTests/defaultConstructor.s
+	@echo ... tests/HashMapTests/exists.obj
+	@echo ... tests/HashMapTests/exists.i
+	@echo ... tests/HashMapTests/exists.s
+	@echo ... tests/HashMapTests/get.obj
+	@echo ... tests/HashMapTests/get.i
+	@echo ... tests/HashMapTests/get.s
+	@echo ... tests/HashMapTests/keys.obj
+	@echo ... tests/HashMapTests/keys.i
+	@echo ... tests/HashMapTests/keys.s
+	@echo ... tests/HashMapTests/loadfactor.obj
+	@echo ... tests/HashMapTests/loadfactor.i
+	@echo ... tests/HashMapTests/loadfactor.s
+	@echo ... tests/HashMapTests/merge.obj
+	@echo ... tests/HashMapTests/merge.i
+	@echo ... tests/HashMapTests/merge.s
+	@echo ... tests/HashMapTests/remove.obj
+	@echo ... tests/HashMapTests/remove.i
+	@echo ... tests/HashMapTests/remove.s
+	@echo ... tests/HashMapTests/set.obj
+	@echo ... tests/HashMapTests/set.i
+	@echo ... tests/HashMapTests/set.s
+	@echo ... tests/HashMapTests/size.obj
+	@echo ... tests/HashMapTests/size.i
+	@echo ... tests/HashMapTests/size.s
+	@echo ... tests/HashMapTests/values.obj
+	@echo ... tests/HashMapTests/values.i
+	@echo ... tests/HashMapTests/values.s
+	@echo ... tests/LinkedListTests/assignmentoperator.obj
+	@echo ... tests/LinkedListTests/assignmentoperator.i
+	@echo ... tests/LinkedListTests/assignmentoperator.s
+	@echo ... tests/LinkedListTests/clear.obj
+	@echo ... tests/LinkedListTests/clear.i
+	@echo ... tests/LinkedListTests/clear.s
+	@echo ... tests/LinkedListTests/copyconstructor.obj
+	@echo ... tests/LinkedListTests/copyconstructor.i
+	@echo ... tests/LinkedListTests/copyconstructor.s
+	@echo ... tests/LinkedListTests/ddeleteback.obj
+	@echo ... tests/LinkedListTests/ddeleteback.i
+	@echo ... tests/LinkedListTests/ddeleteback.s
+	@echo ... tests/LinkedListTests/defaultconstructor.obj
+	@echo ... tests/LinkedListTests/defaultconstructor.i
+	@echo ... tests/LinkedListTests/defaultconstructor.s
+	@echo ... tests/LinkedListTests/deleteback.obj
+	@echo ... tests/LinkedListTests/deleteback.i
+	@echo ... tests/LinkedListTests/deleteback.s
+	@echo ... tests/LinkedListTests/deletefront.obj
+	@echo ... tests/LinkedListTests/deletefront.i
+	@echo ... tests/LinkedListTests/deletefront.s
+	@echo ... tests/LinkedListTests/destructor.obj
+	@echo ... tests/LinkedListTests/destructor.i
+	@echo ... tests/LinkedListTests/destructor.s
+	@echo ... tests/LinkedListTests/dinsertindex.obj
+	@echo ... tests/LinkedListTests/dinsertindex.i
+	@echo ... tests/LinkedListTests/dinsertindex.s
+	@echo ... tests/LinkedListTests/dremove.obj
+	@echo ... tests/LinkedListTests/dremove.i
+	@echo ... tests/LinkedListTests/dremove.s
+	@echo ... tests/LinkedListTests/dremoveval.obj
+	@echo ... tests/LinkedListTests/dremoveval.i
+	@echo ... tests/LinkedListTests/dremoveval.s
+	@echo ... tests/LinkedListTests/get.obj
+	@echo ... tests/LinkedListTests/get.i
+	@echo ... tests/LinkedListTests/get.s
+	@echo ... tests/LinkedListTests/indexinsertion.obj
+	@echo ... tests/LinkedListTests/indexinsertion.i
+	@echo ... tests/LinkedListTests/indexinsertion.s
+	@echo ... tests/LinkedListTests/insertback.obj
+	@echo ... tests/LinkedListTests/insertback.i
+	@echo ... tests/LinkedListTests/insertback.s
+	@echo ... tests/LinkedListTests/insertfront.obj
+	@echo ... tests/LinkedListTests/insertfront.i
+	@echo ... tests/LinkedListTests/insertfront.s
+	@echo ... tests/LinkedListTests/removeindex.obj
+	@echo ... tests/LinkedListTests/removeindex.i
+	@echo ... tests/LinkedListTests/removeindex.s
+	@echo ... tests/LinkedListTests/search.obj
+	@echo ... tests/LinkedListTests/search.i
+	@echo ... tests/LinkedListTests/search.s
+	@echo ... tests/LinkedListTests/size.obj
+	@echo ... tests/LinkedListTests/size.i
+	@echo ... tests/LinkedListTests/size.s
 .PHONY : help
 
 

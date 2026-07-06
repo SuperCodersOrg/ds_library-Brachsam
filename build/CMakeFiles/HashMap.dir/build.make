@@ -76,15 +76,15 @@ CMakeFiles/HashMap.dir/src/HashMap/hmap.cpp.obj: CMakeFiles/HashMap.dir/includes
 CMakeFiles/HashMap.dir/src/HashMap/hmap.cpp.obj: C:/Users/brach/OneDrive/Documents/Project-01/src/HashMap/hmap.cpp
 CMakeFiles/HashMap.dir/src/HashMap/hmap.cpp.obj: CMakeFiles/HashMap.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\brach\OneDrive\Documents\Project-01\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/HashMap.dir/src/HashMap/hmap.cpp.obj"
-	C:\MinGW\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/HashMap.dir/src/HashMap/hmap.cpp.obj -MF CMakeFiles\HashMap.dir\src\HashMap\hmap.cpp.obj.d -o CMakeFiles\HashMap.dir\src\HashMap\hmap.cpp.obj -c C:\Users\brach\OneDrive\Documents\Project-01\src\HashMap\hmap.cpp
+	C:\msys64\ucrt64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/HashMap.dir/src/HashMap/hmap.cpp.obj -MF CMakeFiles\HashMap.dir\src\HashMap\hmap.cpp.obj.d -o CMakeFiles\HashMap.dir\src\HashMap\hmap.cpp.obj -c C:\Users\brach\OneDrive\Documents\Project-01\src\HashMap\hmap.cpp
 
 CMakeFiles/HashMap.dir/src/HashMap/hmap.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/HashMap.dir/src/HashMap/hmap.cpp.i"
-	C:\MinGW\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\brach\OneDrive\Documents\Project-01\src\HashMap\hmap.cpp > CMakeFiles\HashMap.dir\src\HashMap\hmap.cpp.i
+	C:\msys64\ucrt64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\brach\OneDrive\Documents\Project-01\src\HashMap\hmap.cpp > CMakeFiles\HashMap.dir\src\HashMap\hmap.cpp.i
 
 CMakeFiles/HashMap.dir/src/HashMap/hmap.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/HashMap.dir/src/HashMap/hmap.cpp.s"
-	C:\MinGW\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\brach\OneDrive\Documents\Project-01\src\HashMap\hmap.cpp -o CMakeFiles\HashMap.dir\src\HashMap\hmap.cpp.s
+	C:\msys64\ucrt64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\brach\OneDrive\Documents\Project-01\src\HashMap\hmap.cpp -o CMakeFiles\HashMap.dir\src\HashMap\hmap.cpp.s
 
 # Object files for target HashMap
 HashMap_OBJECTS = \

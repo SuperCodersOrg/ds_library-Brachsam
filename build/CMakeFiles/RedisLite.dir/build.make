@@ -76,15 +76,15 @@ CMakeFiles/RedisLite.dir/src/RedisLite/Redismain.cpp.obj: CMakeFiles/RedisLite.d
 CMakeFiles/RedisLite.dir/src/RedisLite/Redismain.cpp.obj: C:/Users/brach/OneDrive/Documents/Project-01/src/RedisLite/Redismain.cpp
 CMakeFiles/RedisLite.dir/src/RedisLite/Redismain.cpp.obj: CMakeFiles/RedisLite.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\brach\OneDrive\Documents\Project-01\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/RedisLite.dir/src/RedisLite/Redismain.cpp.obj"
-	C:\MinGW\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/RedisLite.dir/src/RedisLite/Redismain.cpp.obj -MF CMakeFiles\RedisLite.dir\src\RedisLite\Redismain.cpp.obj.d -o CMakeFiles\RedisLite.dir\src\RedisLite\Redismain.cpp.obj -c C:\Users\brach\OneDrive\Documents\Project-01\src\RedisLite\Redismain.cpp
+	C:\msys64\ucrt64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/RedisLite.dir/src/RedisLite/Redismain.cpp.obj -MF CMakeFiles\RedisLite.dir\src\RedisLite\Redismain.cpp.obj.d -o CMakeFiles\RedisLite.dir\src\RedisLite\Redismain.cpp.obj -c C:\Users\brach\OneDrive\Documents\Project-01\src\RedisLite\Redismain.cpp
 
 CMakeFiles/RedisLite.dir/src/RedisLite/Redismain.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/RedisLite.dir/src/RedisLite/Redismain.cpp.i"
-	C:\MinGW\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\brach\OneDrive\Documents\Project-01\src\RedisLite\Redismain.cpp > CMakeFiles\RedisLite.dir\src\RedisLite\Redismain.cpp.i
+	C:\msys64\ucrt64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\brach\OneDrive\Documents\Project-01\src\RedisLite\Redismain.cpp > CMakeFiles\RedisLite.dir\src\RedisLite\Redismain.cpp.i
 
 CMakeFiles/RedisLite.dir/src/RedisLite/Redismain.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/RedisLite.dir/src/RedisLite/Redismain.cpp.s"
-	C:\MinGW\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\brach\OneDrive\Documents\Project-01\src\RedisLite\Redismain.cpp -o CMakeFiles\RedisLite.dir\src\RedisLite\Redismain.cpp.s
+	C:\msys64\ucrt64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\brach\OneDrive\Documents\Project-01\src\RedisLite\Redismain.cpp -o CMakeFiles\RedisLite.dir\src\RedisLite\Redismain.cpp.s
 
 # Object files for target RedisLite
 RedisLite_OBJECTS = \

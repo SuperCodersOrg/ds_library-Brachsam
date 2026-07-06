@@ -1,7 +1,10 @@
 {
 	"InstallScripts" : 
 	[
-		"C:/Users/brach/OneDrive/Documents/Project-01/build/cmake_install.cmake"
+		"C:/Users/brach/OneDrive/Documents/Project-01/build/cmake_install.cmake",
+		"C:/Users/brach/OneDrive/Documents/Project-01/build/external/googletest/cmake_install.cmake",
+		"C:/Users/brach/OneDrive/Documents/Project-01/build/external/googletest/googlemock/cmake_install.cmake",
+		"C:/Users/brach/OneDrive/Documents/Project-01/build/external/googletest/googletest/cmake_install.cmake"
 	],
 	"Parallel" : false
 }

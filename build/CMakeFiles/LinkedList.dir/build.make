@@ -76,15 +76,15 @@ CMakeFiles/LinkedList.dir/src/LinkedList/Linkedmain.cpp.obj: CMakeFiles/LinkedLi
 CMakeFiles/LinkedList.dir/src/LinkedList/Linkedmain.cpp.obj: C:/Users/brach/OneDrive/Documents/Project-01/src/LinkedList/Linkedmain.cpp
 CMakeFiles/LinkedList.dir/src/LinkedList/Linkedmain.cpp.obj: CMakeFiles/LinkedList.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\brach\OneDrive\Documents\Project-01\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/LinkedList.dir/src/LinkedList/Linkedmain.cpp.obj"
-	C:\MinGW\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/LinkedList.dir/src/LinkedList/Linkedmain.cpp.obj -MF CMakeFiles\LinkedList.dir\src\LinkedList\Linkedmain.cpp.obj.d -o CMakeFiles\LinkedList.dir\src\LinkedList\Linkedmain.cpp.obj -c C:\Users\brach\OneDrive\Documents\Project-01\src\LinkedList\Linkedmain.cpp
+	C:\msys64\ucrt64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/LinkedList.dir/src/LinkedList/Linkedmain.cpp.obj -MF CMakeFiles\LinkedList.dir\src\LinkedList\Linkedmain.cpp.obj.d -o CMakeFiles\LinkedList.dir\src\LinkedList\Linkedmain.cpp.obj -c C:\Users\brach\OneDrive\Documents\Project-01\src\LinkedList\Linkedmain.cpp
 
 CMakeFiles/LinkedList.dir/src/LinkedList/Linkedmain.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/LinkedList.dir/src/LinkedList/Linkedmain.cpp.i"
-	C:\MinGW\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\brach\OneDrive\Documents\Project-01\src\LinkedList\Linkedmain.cpp > CMakeFiles\LinkedList.dir\src\LinkedList\Linkedmain.cpp.i
+	C:\msys64\ucrt64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\brach\OneDrive\Documents\Project-01\src\LinkedList\Linkedmain.cpp > CMakeFiles\LinkedList.dir\src\LinkedList\Linkedmain.cpp.i
 
 CMakeFiles/LinkedList.dir/src/LinkedList/Linkedmain.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/LinkedList.dir/src/LinkedList/Linkedmain.cpp.s"
-	C:\MinGW\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\brach\OneDrive\Documents\Project-01\src\LinkedList\Linkedmain.cpp -o CMakeFiles\LinkedList.dir\src\LinkedList\Linkedmain.cpp.s
+	C:\msys64\ucrt64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\brach\OneDrive\Documents\Project-01\src\LinkedList\Linkedmain.cpp -o CMakeFiles\LinkedList.dir\src\LinkedList\Linkedmain.cpp.s
 
 # Object files for target LinkedList
 LinkedList_OBJECTS = \
