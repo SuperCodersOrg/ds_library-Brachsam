@@ -1,3 +1,51 @@
+# cmake_minimum_required(VERSION 3.15)
+
+# project(CollectionsLibrary LANGUAGES CXX)
+
+# set(CMAKE_CXX_STANDARD 17)
+# set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+# enable_testing()
+
+# add_subdirectory(external/googletest)
+
+# set(LIBRARY_INCLUDE_DIRS
+#     ${CMAKE_CURRENT_SOURCE_DIR}/include
+#     ${CMAKE_CURRENT_SOURCE_DIR}/include/DynamicArray
+#     ${CMAKE_CURRENT_SOURCE_DIR}/include/LinkedList
+#     ${CMAKE_CURRENT_SOURCE_DIR}/include/HashMap
+#     ${CMAKE_CURRENT_SOURCE_DIR}/include/RedisLite
+#     ${CMAKE_CURRENT_SOURCE_DIR}/include/Exceptions
+# )
+
+# add_library(CollectionsLibrary INTERFACE)
+# target_include_directories(CollectionsLibrary INTERFACE ${LIBRARY_INCLUDE_DIRS})
+
+# # Dynamic Array
+# add_executable(DynamicArray src/DynamicArray/Dynamicmain.cpp)
+# target_link_libraries(DynamicArray PRIVATE CollectionsLibrary)
+
+# # Linked List
+# add_executable(LinkedList src/LinkedList/Linkedmain.cpp)
+# target_link_libraries(LinkedList PRIVATE CollectionsLibrary)
+
+# # HashMap
+# add_executable(HashMap src/HashMap/hmap.cpp)
+# target_link_libraries(HashMap PRIVATE CollectionsLibrary)
+
+# # Redis Lite
+# add_executable(RedisLite src/RedisLite/Redismain.cpp)
+# target_link_libraries(RedisLite PRIVATE CollectionsLibrary)
+
+# # GoogleTest
+# file(GLOB_RECURSE TEST_SOURCES tests/*.cpp)
+
+# add_executable(CollectionTests ${TEST_SOURCES})
+# target_link_libraries(CollectionTests PRIVATE CollectionsLibrary gtest gtest_main)
+
+# include(GoogleTest)
+# gtest_discover_tests(CollectionTests)
+
 cmake_minimum_required(VERSION 3.15)
 
 project(CollectionsLibrary)
@@ -9,51 +57,64 @@ enable_testing()
 
 add_subdirectory(external/googletest)
 
-include_directories(
-    src/DynamicArray
-    "src/Linkedlist"
-    src/HashMap
-    src/RedisLite
-    src/Exceptions
+# ==================================
+# Collections Library
+# ==================================
+
+add_library(Collections INTERFACE)
+
+target_include_directories(Collections INTERFACE
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/DynamicArray
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/LinkedList
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/HashMap
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/RedisLite
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/Exceptions
 )
 
-# Dynamic Array
-add_executable(
-    DynamicArray
+# ==================================
+# src
+# ==================================
+
+add_executable(DynamicArray
     src/DynamicArray/Dynamicmain.cpp
 )
 
-# Linked List
-add_executable(
-    LinkedList
+target_link_libraries(DynamicArray PRIVATE Collections)
+
+add_executable(LinkedList
     src/LinkedList/Linkedmain.cpp
 )
 
-# HashMap
-add_executable(
-    HashMap
+target_link_libraries(LinkedList PRIVATE Collections)
+
+add_executable(HashMap
     src/HashMap/hmap.cpp
 )
 
-# Redis Lite
-add_executable(
-    RedisLite
+target_link_libraries(HashMap PRIVATE Collections)
+
+add_executable(RedisLite
     src/RedisLite/Redismain.cpp
 )
 
-# GoogleTest
+target_link_libraries(RedisLite PRIVATE Collections)
+
+# ==================================
+# Tests
+# ==================================
+
 file(GLOB_RECURSE TEST_SOURCES
     tests/*.cpp
 )
 
-add_executable(
-    CollectionTests
+add_executable(CollectionTests
     ${TEST_SOURCES}
 )
 
-target_link_libraries(
-    CollectionTests
+target_link_libraries(CollectionTests
     PRIVATE
+    Collections
     gtest
     gtest_main
 )
